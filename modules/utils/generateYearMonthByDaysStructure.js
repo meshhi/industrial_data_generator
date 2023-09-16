@@ -5,4 +5,5 @@ export default (year, month) => {
     for (let i = 1; i <= 12; i++) {
         result[i] = generateMonthStructure(year, month);
     }
+    return result;
 }
