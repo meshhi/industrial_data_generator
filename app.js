@@ -5,7 +5,7 @@ const generateDataFile = () => {
     const dataGenerator = new DataGenerator();
     const data = dataGenerator.generateData();
 
-    fileWriter.writeFile(data, 'test2');
+    fileWriter.writeFile(data, 'test');
 };
 
 generateDataFile();

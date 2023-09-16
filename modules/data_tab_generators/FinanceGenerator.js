@@ -1,3 +1,6 @@
+import generateYearMonthByDaysStructure from '../utils/generateYearMonthByDaysStructure.js';
+import mappers from '../utils/mappers.js';
+
 class FinanceGenerator {
     constructor() {
         this.structure = {
@@ -36,8 +39,40 @@ class FinanceGenerator {
         }
     }
 
-    generateData() {
+    generateData(custom, type, year, month) {
+        this.structure.revenue_consolidated.plan = generateYearMonthByDaysStructure(year, month)
+        this.structure.revenue_consolidated.fact = generateYearMonthByDaysStructure(year, month)
+        this.structure.profit_consolidated.EBITDA = generateYearMonthByDaysStructure(year, month)
+        this.structure.profit_consolidated.profit = generateYearMonthByDaysStructure(year, month)
+        // 
+        this.structure.profit_consolidated.profitability = {
+            1: 1,
+        }
+        // 
+        this.structure.profit_consolidated.profitability_month_detalized = generateYearMonthByDaysStructure(year, month)
+        this.structure.expenses_consolidated.plan = generateYearMonthByDaysStructure(year, month)
+        this.structure.expenses_consolidated.fact = generateYearMonthByDaysStructure(year, month)
+
+        this.generateSankeyData();
         return this.structure;
+    }
+
+    generateSankeyLinks(custom, count) {
+        const result = [];
+        for (let i = 1; i <= count; i++) {
+            result.push({
+                "source": mappers.sankeyLeftNames[0],
+                "target": mappers.sankeyRightNames[0],
+                "value": Math.round(Math.random())
+            });
+        }
+    }
+
+    generateSankeyData(custom, type, year, month) {
+        this.structure.revenue_cost_ratio.left_values = [0, 0, 0, 0];
+        this.structure.revenue_cost_ratio.right_values = [0, 0, 0, 0];
+        this.structure.revenue_cost_ratio.data = [...mappers.sankeyLeftNames, ...mappers.sankeyRightNames];
+        this.structure.revenue_cost_ratio.links = this.generateSankeyLinks(null, 16);
     }
 }
 
