@@ -54,6 +54,7 @@ class FinanceGenerator {
         this.structure.expenses_consolidated.fact = generateYearMonthByDaysStructure(year, month)
 
         this.generateSankeyData();
+        
         return this.structure;
     }
 

@@ -46,6 +46,38 @@ export default class DataGenerator {
     }
 
     sumDataByMonthsFilter(yearData) {
+            let sumObj = {}
+            const sumDataInObjects = (obj, iteration, isPercentage = false, isDays = false, lastDay = false) => {
+                for (let key in obj) {
+                    if (!sumObj[key]) {
+                        sumObj[key] = 0
+                    }
+                    sumObj[key] += Number(obj[key].toFixed(2))
+                }
+                if (!isDays) {
+                    if (iteration == 12) {
+                        const sumObjCopy = JSON.parse(JSON.stringify(sumObj));
+                        if (isPercentage) {
+                            for (let key in sumObjCopy) {
+                                sumObjCopy[key] = Number((sumObjCopy[key] / 12).toFixed(2))
+                            }
+                        }
+                        sumObj = {}
+                        return sumObjCopy
+                    }
+                } else {
+                    if (iteration == lastDay) {
+                        const sumObjCopy = JSON.parse(JSON.stringify(sumObj));
+                        if (isPercentage) {
+                            for (let key in sumObjCopy) {
+                                sumObjCopy[key] = Number((sumObjCopy[key] / 12).toFixed(2))
+                            }
+                        }
+                        sumObj = {}
+                        return sumObjCopy
+                    }
+                }
+            }
             let number = 0
             let fluidity = 0
             let addHours = 0
@@ -704,4 +736,16 @@ export default class DataGenerator {
         return rawData;
     }
     
+    sumDataByIndustryTypesFilter(yearData) {
+        
+    }
+
+    generateIndustryTypesSumAllFilterData = (rawData) => {
+        for (let type in rawData) {
+            for (let year in rawData[type]) {
+                rawData[type][year]['all'] = this.sumDataByIndustryTypesFilter(rawData[type][year]);
+            }
+        }
+        return rawData;
+    }
 }
