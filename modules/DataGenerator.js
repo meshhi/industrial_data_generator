@@ -736,16 +736,484 @@ export default class DataGenerator {
         return rawData;
     }
     
-    sumDataByIndustryTypesFilter(yearData) {
-        
-    }
+    sumDataByIndustryTypesFilter() {
+        // first mock
+        let resultAllData = JSON.parse(JSON.stringify(this.resultTemplate['pipes']));
+        for (let year in resultAllData) {
+            for (let month in resultAllData[year]) {
+                for (let tab in resultAllData[year][month]) {
+                    if (tab == 'delivery_and_quality') {
+                        // +
+                        let defectiveSum = 0
+                        for (let type of mappers.industrialTypes) {
+                            defectiveSum += this.resultTemplate[type][year][month]['delivery_and_quality']['defective']
+                        }
+                        resultAllData[year][month]['delivery_and_quality']['defective'] = defectiveSum/4;
+                        // todo change percent logic
+                        let defectiveDiffSum = 0
+                        for (let type of mappers.industrialTypes) {
+                            // defectiveDiffSum += this.resultTemplate[type][year][month]['delivery_and_quality']['defective_diff']
+                        }
+                        resultAllData[year][month]['delivery_and_quality']['defective_diff'] = defectiveDiffSum;
+                        // todo make defective diff color logic
+                        let defectiveDiffColor = 2
+                        resultAllData[year][month]['delivery_and_quality']['defective_diff_color'] = defectiveDiffColor;
 
-    generateIndustryTypesSumAllFilterData = (rawData) => {
-        for (let type in rawData) {
-            for (let year in rawData[type]) {
-                rawData[type][year]['all'] = this.sumDataByIndustryTypesFilter(rawData[type][year]);
+                        let map = resultAllData[year][month]['delivery_and_quality']['map']
+                        map.map(item => {
+                            let itemTime = 0
+                            for (let type of mappers.industrialTypes) {
+                                itemTime += Number(this.resultTemplate[type][year][month]['delivery_and_quality']['map'].find(el => el.name == item.name).timeliness);
+                            }
+                            itemTime = Number(itemTime/types.length).toFixed(1)
+                            item.timeliness = itemTime
+
+                            let itemEq = 0
+                            for (let type of mappers.industrialTypes) {
+                                itemEq += Number(this.resultTemplate[type][year][month]['delivery_and_quality']['map'].find(el => el.name == item.name).equipment);
+                            }
+                            itemEq = Number(itemTime/types.length).toFixed(1)
+                            item.equipment = itemEq
+
+                            let itemQu = 0
+                            for (let type of mappers.industrialTypes) {
+                                itemQu += Number(this.resultTemplate[type][year][month]['delivery_and_quality']['map'].find(el => el.name == item.name).quality);
+                            }
+                            itemQu = Number(itemQu/types.length).toFixed(1)
+                            item.quality = itemQu
+                            item.value[2] = ((Number(itemQu) + Number(itemEq) + Number(itemTime))/3).toFixed(1)
+                        })    
+                        resultAllData[year][month]['delivery_and_quality']['map'] = map;
+
+                        let producedSum = 0
+                        for (let type of mappers.industrialTypes) {
+                            producedSum += this.resultTemplate[type][year][month]['delivery_and_quality']['produced']
+                        }
+                        resultAllData[year][month]['delivery_and_quality']['produced'] = producedSum;
+
+                        let producedConsolidatedPlanSum = resultAllData[year][month]['delivery_and_quality']['produced_consolidated']['plan']
+                        for (let month in producedConsolidatedPlanSum) {
+                            for (let day in producedConsolidatedPlanSum[month]) {
+                                let sum = 0
+                                for (let type of mappers.industrialTypes) {
+                                    sum += this.resultTemplate[type][year][month]['delivery_and_quality']['produced_consolidated']['plan'][month][day]
+                                }
+                                producedConsolidatedPlanSum[month][day] = sum
+                            }
+                        }
+                        resultAllData[year][month]['delivery_and_quality']['produced_consolidated']['plan'] = producedConsolidatedPlanSum;
+
+                        let producedConsolidatedFactSum = resultAllData[year][month]['delivery_and_quality']['produced_consolidated']['fact']
+                        for (let month in producedConsolidatedFactSum) {
+                            for (let day in producedConsolidatedFactSum[month]) {
+                                let sum = 0
+                                for (let type of mappers.industrialTypes) {
+                                    sum += this.resultTemplate[type][year][month]['delivery_and_quality']['produced_consolidated']['fact'][month][day]
+                                }
+                                producedConsolidatedFactSum[month][day] = sum
+                            }
+                        }
+                        resultAllData[year][month]['delivery_and_quality']['produced_consolidated']['fact'] = producedConsolidatedFactSum;
+
+                        // todo change percent diff
+                        let producedDiff = 0
+                        for (let type of mappers.industrialTypes) {
+                            // producedDiff += this.resultTemplate[type][year][month]['delivery_and_quality']['produced_diff']
+                        }
+                        resultAllData[year][month]['delivery_and_quality']['produced_diff'] = producedDiff;
+
+                        // todo create color logic
+                        let producedDiffColor = 2
+                        resultAllData[year][month]['delivery_and_quality']['produced_diff_color'] = producedDiffColor;
+
+                        let requisitions = []
+                        for (let type of mappers.industrialTypes) {
+                            requisitions = [...requisitions, ...this.resultTemplate[type][year][month]['delivery_and_quality']['requisitions']]
+                        }
+                        resultAllData[year][month]['delivery_and_quality']['requisitions'] = requisitions;
+
+                        let shippedSum = 0
+                        for (let type of mappers.industrialTypes) {
+                            shippedSum += this.resultTemplate[type][year][month]['delivery_and_quality']['shipped']
+                        }
+                        resultAllData[year][month]['delivery_and_quality']['shipped'] = shippedSum;
+
+                        let shippedConsolidatedFactSum = resultAllData[year][month]['delivery_and_quality']['shipped_consolidated']['fact']
+                        for (let month in shippedConsolidatedFactSum) {
+                            for (let day in shippedConsolidatedFactSum[month]) {
+                                let sum = 0
+                                for (let type of mappers.industrialTypes) {
+                                    sum += this.resultTemplate[type][year][month]['delivery_and_quality']['shipped_consolidated']['fact'][month][day]
+                                }
+                                shippedConsolidatedFactSum[month][day] = sum
+                            }
+                        }
+                        resultAllData[year][month]['delivery_and_quality']['shipped_consolidated']['fact'] = shippedConsolidatedFactSum;
+
+                        let shippedConsolidatedPlanSum = resultAllData[year][month]['delivery_and_quality']['shipped_consolidated']['plan']
+                        for (let month in shippedConsolidatedPlanSum) {
+                            for (let day in shippedConsolidatedPlanSum[month]) {
+                                let sum = 0
+                                for (let type of mappers.industrialTypes) {
+                                    sum += this.resultTemplate[type][year][month]['delivery_and_quality']['shipped_consolidated']['plan'][month][day]
+                                }
+                                shippedConsolidatedPlanSum[month][day] = sum
+                            }
+                        }
+                        resultAllData[year][month]['delivery_and_quality']['shipped_consolidated']['plan'] = shippedConsolidatedPlanSum;
+
+
+                        // todo change percent diff
+                        let shippedDiff = 0
+                        for (let type of mappers.industrialTypes) {
+                            // shippedDiff += this.resultTemplate[type][year][month]['delivery_and_quality']['shipped_diff']
+                        }
+                        resultAllData[year][month]['delivery_and_quality']['shipped_diff'] = shippedDiff;
+                        // todo create color logic
+                        let shippedDiffColor = 2
+                        resultAllData[year][month]['delivery_and_quality']['shipped_diff_color'] = shippedDiffColor;
+                    }
+                    if (tab == 'finance') {
+                        let EBITDASum = 0
+                        for (let type of mappers.industrialTypes) {
+                            EBITDASum += this.resultTemplate[type][year][month][tab]['EBITDA']
+                        }
+                        resultAllData[year][month][tab]['EBITDA'] = EBITDASum;
+
+                        // todo change percent diff
+                        let EBITDADiff = 0
+                        for (let type of mappers.industrialTypes) {
+                            // EBITDADiff += this.resultTemplate[type][year][month][tab]['EBITDA_diff']
+                        }
+                        resultAllData[year][month][tab]['EBITDA_diff'] = EBITDADiff;
+                        // todo create color logic
+                        let EBITDADiffColor = 2
+                        resultAllData[year][month][tab]['EBITDA_diff_color'] = EBITDADiffColor;
+
+
+                        let expensesSum = 0
+                        for (let type of mappers.industrialTypes) {
+                            expensesSum += this.resultTemplate[type][year][month][tab]['expenses']
+                        }
+                        resultAllData[year][month][tab]['expenses'] = expensesSum/4;
+
+
+                        let expensesConsolidatedPlanSum = resultAllData[year][month][tab]['expenses_consolidated']['plan']
+                        for (let month in expensesConsolidatedPlanSum) {
+                            for (let day in expensesConsolidatedPlanSum[month]) {
+                                let sum = 0
+                                for (let type of mappers.industrialTypes) {
+                                    sum += this.resultTemplate[type][year][month][tab]['expenses_consolidated']['plan'][month][day]
+                                }
+                                expensesConsolidatedPlanSum[month][day] = sum
+                            }
+                        }
+                        resultAllData[year][month][tab]['expenses_consolidated']['plan'] = expensesConsolidatedPlanSum;
+
+                        let expensesConsolidatedFactSum = resultAllData[year][month][tab]['expenses_consolidated']['fact']
+                        for (let month in expensesConsolidatedFactSum) {
+                            for (let day in expensesConsolidatedFactSum[month]) {
+                                let sum = 0
+                                for (let type of mappers.industrialTypes) {
+                                    sum += this.resultTemplate[type][year][month][tab]['expenses_consolidated']['fact'][month][day]
+                                }
+                                expensesConsolidatedFactSum[month][day] = sum
+                            }
+                        }
+                        resultAllData[year][month][tab]['expenses_consolidated']['fact'] = expensesConsolidatedFactSum;
+
+                        // todo change percent diff
+                        let expensesDiff = 0
+                        for (let type of mappers.industrialTypes) {
+                            // expensesDiff += this.resultTemplate[type][year][month][tab]['expenses_diff']
+                        }
+                        resultAllData[year][month][tab]['expenses_diff'] = expensesDiff;
+                        // todo create color logic
+                        let expensesDiffColor = 2
+                        resultAllData[year][month][tab]['expenses_diff_color'] = expensesDiffColor;
+
+
+                        let profitSum = 0
+                        for (let type of mappers.industrialTypes) {
+                            profitSum += this.resultTemplate[type][year][month][tab]['profit']
+                        }
+                        resultAllData[year][month][tab]['profit'] = profitSum;
+
+
+                        let EBITDAConsolidatedSum = resultAllData[year][month][tab]['profit_consolidated']['EBITDA']
+                        for (let month in EBITDAConsolidatedSum) {
+                            for (let day in EBITDAConsolidatedSum[month]) {
+                                let sum = 0
+                                for (let type of mappers.industrialTypes) {
+                                    sum += this.resultTemplate[type][year][month][tab]['profit_consolidated']['EBITDA'][month][day]
+                                }
+                                EBITDAConsolidatedSum[month][day] = sum
+                            }
+                        }
+                        resultAllData[year][month][tab]['profit_consolidated']['EBITDA'] = EBITDAConsolidatedSum;
+
+
+                        let profitConsolidatedSum = resultAllData[year][month][tab]['profit_consolidated']['profit']
+                        for (let month in profitConsolidatedSum) {
+                            for (let day in profitConsolidatedSum[month]) {
+                                let sum = 0
+                                for (let type of mappers.industrialTypes) {
+                                    sum += this.resultTemplate[type][year][month][tab]['profit_consolidated']['profit'][month][day]
+                                }
+                                profitConsolidatedSum[month][day] = sum
+                            }
+                        }
+                        resultAllData[year][month][tab]['profit_consolidated']['profit'] = profitConsolidatedSum;
+
+                        // todo change logic
+                        let profitabilitySum = resultAllData[year][month][tab]['profit_consolidated']['profitability']
+                        for (let month in profitabilitySum) {
+                            let sum = 0
+                            for (let type of mappers.industrialTypes) {
+                                sum += Number((this.resultTemplate[type][year][month][tab]['profit_consolidated']['profitability'][month]).toFixed(2))
+                            }
+                            profitabilitySum[month] = Number((sum/4).toFixed(2))
+                        }
+                        resultAllData[year][month][tab]['profit_consolidated']['profitability'] = profitabilitySum;
+
+
+                        let profitabilityMonthConsolidatedSum = resultAllData[year][month][tab]['profit_consolidated']['profitability_month_detalized']
+                        for (let month in profitabilityMonthConsolidatedSum) {
+                            for (let day in profitabilityMonthConsolidatedSum[month]) {
+                                let sum = 0
+                                for (let type of mappers.industrialTypes) {
+                                    sum += this.resultTemplate[type][year][month][tab]['profit_consolidated']['profitability_month_detalized'][month][day]
+                                }
+                                profitabilityMonthConsolidatedSum[month][day] = sum
+                            }
+                        }
+                        resultAllData[year][month][tab]['profit_consolidated']['profitability_month_detalized'] = profitabilityMonthConsolidatedSum;
+
+                        // todo change percent diff
+                        let profitDiff = 0
+                        for (let type of mappers.industrialTypes) {
+                            // profitDiff += this.resultTemplate[type][year][month][tab]['profit_diff']
+                        }
+                        resultAllData[year][month][tab]['profit_diff'] = profitDiff;
+                        // todo create color logic
+                        let profitDiffColor = 2
+                        resultAllData[year][month][tab]['profit_diff_color'] = profitDiffColor;
+
+                        let revenueSum = 0
+                        for (let type of mappers.industrialTypes) {
+                            revenueSum += this.resultTemplate[type][year][month][tab]['revenue']
+                        }
+                        resultAllData[year][month][tab]['revenue'] = revenueSum;
+
+
+
+
+
+                        let revenueConsolidatedPlanSum = resultAllData[year][month][tab]['revenue_consolidated']['plan']
+                        for (let month in revenueConsolidatedPlanSum) {
+                            for (let day in revenueConsolidatedPlanSum[month]) {
+                                let sum = 0
+                                for (let type of mappers.industrialTypes) {
+                                    sum += this.resultTemplate[type][year][month][tab]['revenue_consolidated']['plan'][month][day]
+                                }
+                                revenueConsolidatedPlanSum[month][day] = sum
+                            }
+                        }
+                        resultAllData[year][month][tab]['revenue_consolidated']['plan'] = revenueConsolidatedPlanSum;
+
+                        let revenueConsolidatedFactSum = resultAllData[year][month][tab]['revenue_consolidated']['fact']
+                        for (let month in revenueConsolidatedFactSum) {
+                            for (let day in revenueConsolidatedFactSum[month]) {
+                                let sum = 0
+                                for (let type of mappers.industrialTypes) {
+                                    sum += this.resultTemplate[type][year][month][tab]['revenue_consolidated']['fact'][month][day]
+                                }
+                                revenueConsolidatedFactSum[month][day] = sum
+                            }
+                        }
+                        resultAllData[year][month][tab]['revenue_consolidated']['fact'] = revenueConsolidatedFactSum;
+
+                        // todo logic
+                        let revenueCostRatioSum = resultAllData[year][month][tab]['revenue_cost_ratio']
+                        revenueCostRatioSum['left_values'] = [0, 0, 0, 0]
+                        revenueCostRatioSum['right_values'] = [0, 0, 0, 0]
+                        for (let type of mappers.industrialTypes) {
+                            revenueCostRatioSum['left_values'][0] += this.resultTemplate[type][year][month][tab]['revenue_cost_ratio']['left_values'][0]
+                            revenueCostRatioSum['left_values'][1] += this.resultTemplate[type][year][month][tab]['revenue_cost_ratio']['left_values'][1]
+                            revenueCostRatioSum['left_values'][2] += this.resultTemplate[type][year][month][tab]['revenue_cost_ratio']['left_values'][2]
+                            revenueCostRatioSum['left_values'][3] += this.resultTemplate[type][year][month][tab]['revenue_cost_ratio']['left_values'][3]
+
+                            revenueCostRatioSum['right_values'][0] += this.resultTemplate[type][year][month][tab]['revenue_cost_ratio']['right_values'][0]
+                            revenueCostRatioSum['right_values'][1] += this.resultTemplate[type][year][month][tab]['revenue_cost_ratio']['right_values'][1]
+                            revenueCostRatioSum['right_values'][2] += this.resultTemplate[type][year][month][tab]['revenue_cost_ratio']['right_values'][2]
+                            revenueCostRatioSum['right_values'][3] += this.resultTemplate[type][year][month][tab]['revenue_cost_ratio']['right_values'][3]
+                        }
+                        resultAllData[year][month][tab]['revenue_cost_ratio'] = revenueCostRatioSum;
+
+
+                        // todo change percent diff
+                        let revenueDiff = 0
+                        for (let type of mappers.industrialTypes) {
+                            // revenueDiff += this.resultTemplate[type][year][month][tab]['revenue_diff']
+                        }
+                        resultAllData[year][month][tab]['revenue_diff'] = revenueDiff;
+                        // todo create color logic
+                        let revenueDiffColor = 2
+                        resultAllData[year][month][tab]['revenue_diff_color'] = revenueDiffColor;
+                    }
+                    if (tab == 'security_and_morale') {
+                        let additional_shifts_hoursSum = 0
+                        for (let type of mappers.industrialTypes) {
+                            additional_shifts_hoursSum += this.resultTemplate[type][year][month][tab]['additional_shifts_hours']
+                        }
+                        resultAllData[year][month][tab]['additional_shifts_hours'] = additional_shifts_hoursSum;
+
+                        // todo change percent diff
+                        let additional_shifts_hoursDiff = 0
+                        for (let type of mappers.industrialTypes) {
+                            additional_shifts_hoursDiff += this.resultTemplate[type][year][month][tab]['additional_shifts_hours_diff_percent']
+                        }
+                        resultAllData[year][month][tab]['additional_shifts_hours_diff_percent'] = additional_shifts_hoursDiff;
+                        // todo create color logic
+                        let additional_shifts_hoursDiffColor = 2
+                        resultAllData[year][month][tab]['additional_shifts_hours_diff_percent_color'] = additional_shifts_hoursDiffColor;
+
+
+
+                        // todo change logic
+                        let satisSum = resultAllData[year][month][tab]['employee_satisfaction']
+                        for (let status in satisSum) {
+                            let sum = 0
+                            for (let type of mappers.industrialTypes) {
+                                sum += this.resultTemplate[type][year][month][tab]['employee_satisfaction'][status]
+                            }
+                            satisSum[status] = sum/types.length
+                        }
+                        resultAllData[year][month][tab]['employee_satisfaction'] = satisSum;
+
+                        for (let key in resultAllData[year][month][tab]['equipment_lifetime']) {
+                            let eqSum = resultAllData[year][month][tab]['equipment_lifetime'][key]
+                            for (let status in eqSum) {
+                                let sum = 0
+                                for (let type of mappers.industrialTypes) {
+                                    sum += this.resultTemplate[type][year][month][tab]['equipment_lifetime'][key][status]
+                                }
+                                eqSum[status] = sum/types.length
+                            }
+                            resultAllData[year][month][tab]['equipment_lifetime'][key] = eqSum;
+                        }
+
+
+                        for (let key in resultAllData[year][month][tab]['events']) {
+                            let eqSum = resultAllData[year][month][tab]['events'][key]
+                            for (let status in eqSum) {
+                                let sum = 0
+                                for (let type of mappers.industrialTypes) {
+                                    sum += this.resultTemplate[type][year][month][tab]['events'][key][status]
+                                }
+                                eqSum[status] = sum
+                            }
+                            resultAllData[year][month][tab]['events'][key] = eqSum;
+                        }
+
+
+                        for (let eventType in resultAllData[year][month][tab]['events_detalization']) {
+                            for (let key in resultAllData[year][month][tab]['events_detalization'][eventType]) {
+                                let eqSum = resultAllData[year][month][tab]['events_detalization'][eventType][key]
+                                for (let status in eqSum) {
+                                    let sum = 0
+                                    for (let type of mappers.industrialTypes) {
+                                        sum += this.resultTemplate[type][year][month][tab]['events_detalization'][eventType][key][status]
+                                    }
+                                    eqSum[status] = sum
+                                }
+                                resultAllData[year][month][tab]['events_detalization'][eventType][key] = eqSum;
+                            }
+                        }
+
+
+                        let fluiditySum = 0
+                        for (let type of mappers.industrialTypes) {
+                            fluiditySum += this.resultTemplate[type][year][month][tab]['fluidity']
+                        }
+                        resultAllData[year][month][tab]['fluidity'] = fluiditySum/4;
+
+
+                        // todo change percent diff
+                        let fluidityDiff = 0
+                        for (let type of mappers.industrialTypes) {
+                            // fluidityDiff += this.resultTemplate[type][year][month][tab]['fluidity_diff_percent']
+                        }
+                        resultAllData[year][month][tab]['fluidity_diff_percent'] = fluidityDiff;
+                        // todo create color logic
+                        let fluidityDiffColor = 2
+                        resultAllData[year][month][tab]['fluidity_diff_percent_color'] = fluidityDiffColor;
+
+
+
+
+                        for (let key in resultAllData[year][month][tab]['incident_categories']) {
+                            let eqSum = resultAllData[year][month][tab]['incident_categories'][key]
+                            for (let status in eqSum) {
+                                let sum = 0
+                                for (let type of mappers.industrialTypes) {
+                                    sum += this.resultTemplate[type][year][month][tab]['incident_categories'][key][status]
+                                }
+                                eqSum[status] = sum
+                            }
+                            resultAllData[year][month][tab]['incident_categories'][key] = eqSum;
+                        }
+
+
+                        let incidentsSum = 0
+                        for (let type of mappers.industrialTypes) {
+                            incidentsSum += this.resultTemplate[type][year][month][tab]['incidents']
+                        }
+                        resultAllData[year][month][tab]['incidents'] = incidentsSum;
+
+                        let incidentsMaxSum = 0
+                        for (let type of mappers.industrialTypes) {
+                            incidentsMaxSum += this.resultTemplate[type][year][month][tab]['incidents_max']
+                        }
+                        resultAllData[year][month][tab]['incidents_max'] = incidentsMaxSum;
+
+                        let incidents_affectedSum = 0
+                        for (let type of mappers.industrialTypes) {
+                            incidents_affectedSum += this.resultTemplate[type][year][month][tab]['incidents_affected']
+                        }
+                        resultAllData[year][month][tab]['incidents_affected'] = incidents_affectedSum;
+
+                        let incidents_outage_hoursSum = 0
+                        for (let type of mappers.industrialTypes) {
+                            incidents_outage_hoursSum += this.resultTemplate[type][year][month][tab]['incidents_outage_hours']
+                        }
+                        resultAllData[year][month][tab]['incidents_outage_hours'] = incidents_outage_hoursSum;
+
+
+                        let numberSum = 0
+                        for (let type of mappers.industrialTypes) {
+                            numberSum += this.resultTemplate[type][year][month][tab]['number']
+                        }
+                        resultAllData[year][month][tab]['number'] = numberSum;
+
+                        // todo change percent diff
+                        let numberDiff = 0
+                        for (let type of mappers.industrialTypes) {
+                            // numberDiff += this.resultTemplate[type][year][month][tab]['number_diff_percent']
+                        }
+                        resultAllData[year][month][tab]['number_diff_percent'] = numberDiff;
+                        // todo create color logic
+                        let numberDiffColor = 2
+                        resultAllData[year][month][tab]['number_diff_percent_color'] = numberDiffColor;
+                    }
+                }
             }
         }
-        return rawData;
+        this.resultTemplate['all'] = resultAllData;
+        return true;
     }
+
+    generateIndustryTypesSumAllFilterData = () => {
+        this.sumDataByIndustryTypesFilter();
+    };
 }

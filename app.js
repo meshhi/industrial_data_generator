@@ -6,9 +6,9 @@ const generateDataFile = () => {
     // generate cascade data
     const rawData = dataGenerator.generateData();
     const dataWithMonthSumAllFilterData = dataGenerator.generateMonthSumAllFilterData(rawData);
-    const dataWithIndustryTypesSumAllFilterData = dataGenerator.generateIndustryTypesSumAllFilterData(dataWithMonthSumAllFilterData);
+    dataGenerator.generateIndustryTypesSumAllFilterData();
     // write data to file    
-    const data = dataWithIndustryTypesSumAllFilterData;
+    const data = dataGenerator.resultTemplate;
     fileWriter.writeFile(data, 'test');
     fileWriter.writeFileProduction(data, null);
 };
