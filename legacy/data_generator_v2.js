@@ -1558,6 +1558,7 @@ for (let type in result) {
 const generateAllTypesData = () => {
     // first mock
     let resultAllData = JSON.parse(JSON.stringify(result['pipes']));
+    console.log(1)
     for (let year in resultAllData) {
         for (let month in resultAllData[year]) {
             for (let tab in resultAllData[year][month]) {
@@ -1794,6 +1795,7 @@ const generateAllTypesData = () => {
                         profitabilitySum[month] = Number((sum/4).toFixed(2))
                     }
                     resultAllData[year][month][tab]['profit_consolidated']['profitability'] = profitabilitySum;
+                    console.log(profitabilitySum)
 
 
                     let profitabilityMonthConsolidatedSum = resultAllData[year][month][tab]['profit_consolidated']['profitability_month_detalized']

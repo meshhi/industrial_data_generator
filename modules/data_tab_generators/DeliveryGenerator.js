@@ -154,4 +154,4 @@ class DeliveryGenerator {
 
 }
 
-export default new DeliveryGenerator();
+export default DeliveryGenerator;

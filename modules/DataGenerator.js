@@ -1,6 +1,6 @@
-import moraleGenerator from "./data_tab_generators/MoraleGenerator.js"
-import deliveryGenerator from "./data_tab_generators/DeliveryGenerator.js"
-import financeGenerator from "./data_tab_generators/FinanceGenerator.js"
+import MoraleGenerator from "./data_tab_generators/MoraleGenerator.js"
+import DeliveryGenerator from "./data_tab_generators/DeliveryGenerator.js"
+import FinanceGenerator from "./data_tab_generators/FinanceGenerator.js"
 import mappers from "./utils/mappers.js"
 
 export default class DataGenerator {
@@ -16,9 +16,9 @@ export default class DataGenerator {
         this.yearEnd = 2023;
     }
 
-    generateData(custom, type, year, month) {
+    generateData(custom = null) {
         for (let type of mappers.industrialTypes) {
-            for (let year = this.yearStart; year < this.yearEnd; year++) {
+            for (let year = this.yearStart; year <= this.yearEnd; year++) {
                 if (!this.resultTemplate[type][year]) {
                     this.resultTemplate[type][year] = {};
                 }
@@ -30,10 +30,14 @@ export default class DataGenerator {
                 }
             }
         }
+        
         return this.resultTemplate;
     }
 
     generateMonthData(custom, type, year, month) {
+        let financeGenerator = new FinanceGenerator();
+        let deliveryGenerator = new DeliveryGenerator();
+        let moraleGenerator = new MoraleGenerator();
         const finance = financeGenerator.generateData(null, type, year, month);
         const delivery = deliveryGenerator.generateData(null, type, year, month);
         const morale = moraleGenerator.generateData(null, type, year, month);
@@ -173,12 +177,12 @@ export default class DataGenerator {
                     "PK": equipPK,
                     "OX": equipOX
                 },
-                "number_diff_percent": "0",
-                "number_diff_percent_color": "0",
-                "fluidity_diff_percent": "0",
-                "fluidity_diff_percent_color": "0",
-                "additional_shifts_hours_diff_percent": "0",
-                "additional_shifts_hours_diff_percent_color": "0",
+                "number_diff_percent": 0,
+                "number_diff_percent_color": 2,
+                "fluidity_diff_percent": 0,
+                "fluidity_diff_percent_color": 2,
+                "additional_shifts_hours_diff_percent": 0,
+                "additional_shifts_hours_diff_percent_color": 2,
             }
     
             let revenue = 0
@@ -320,14 +324,14 @@ export default class DataGenerator {
                     "data": yearData[1]['finance']['revenue_cost_ratio']['data'],
                     "links": yearData[1]['finance']['revenue_cost_ratio']['links']
                 },
-                "revenue_diff": "0",
-                "revenue_diff_color": "0",
-                "profit_diff": "0",
-                "profit_diff_color": "0",
-                "EBITDA_diff": "0",
-                "EBITDA_diff_color": "0",
-                "expenses_diff": "0",
-                "expenses_diff_color": "0"
+                "revenue_diff": 0,
+                "revenue_diff_color": 2,
+                "profit_diff": 0,
+                "profit_diff_color": 2,
+                "EBITDA_diff": 0,
+                "EBITDA_diff_color": 2,
+                "expenses_diff": 0,
+                "expenses_diff_color": 2
             }
     
     
@@ -408,10 +412,10 @@ export default class DataGenerator {
                 r1_3Sum += Number(yearData[month]['delivery_and_quality']['map'][0]['quality'])
     
             }
-            r1_1Sum = (r1_1Sum/regionsCount).toFixed(1)
-            r1_2Sum = (r1_2Sum/regionsCount).toFixed(1)
-            r1_3Sum = (r1_3Sum/regionsCount).toFixed(1)
-            r1__sum = ((Number(r1_1Sum) + Number(r1_2Sum) + Number(r1_3Sum))/3).toFixed(1)
+            r1_1Sum = Number((r1_1Sum/regionsCount).toFixed(1))
+            r1_2Sum = Number((r1_2Sum/regionsCount).toFixed(1))
+            r1_3Sum = Number((r1_3Sum/regionsCount).toFixed(1))
+            r1__sum = Number(((Number(r1_1Sum) + Number(r1_2Sum) + Number(r1_3Sum))/3).toFixed(1))
     
             let r2_1Sum = 0
             let r2_2Sum = 0
@@ -426,10 +430,10 @@ export default class DataGenerator {
                 r2_3Sum += Number(yearData[month]['delivery_and_quality']['map'][1]['quality'])
     
             }
-            r2_1Sum = (r2_1Sum/regionsCount).toFixed(1)
-            r2_2Sum = (r2_2Sum/regionsCount).toFixed(1)
-            r2_3Sum = (r2_3Sum/regionsCount).toFixed(1)
-            r2__sum = ((Number(r2_1Sum) + Number(r2_2Sum) + Number(r2_3Sum))/3).toFixed(1);
+            r2_1Sum = Number((r2_1Sum/regionsCount).toFixed(1))
+            r2_2Sum = Number((r2_2Sum/regionsCount).toFixed(1))
+            r2_3Sum = Number((r2_3Sum/regionsCount).toFixed(1))
+            r2__sum = Number(((Number(r2_1Sum) + Number(r2_2Sum) + Number(r2_3Sum))/3).toFixed(1))
     
     
             let r3_1Sum = 0
@@ -444,10 +448,10 @@ export default class DataGenerator {
                 r3_2Sum += Number(yearData[month]['delivery_and_quality']['map'][2]['equipment'])
                 r3_3Sum += Number(yearData[month]['delivery_and_quality']['map'][2]['quality'])
             }
-            r3_1Sum = (r3_1Sum/regionsCount).toFixed(1)
-            r3_2Sum = (r3_2Sum/regionsCount).toFixed(1)
-            r3_3Sum = (r3_3Sum/regionsCount).toFixed(1)
-            r3__sum = ((Number(r3_1Sum) + Number(r3_2Sum) + Number(r3_3Sum))/3).toFixed(1)
+            r3_1Sum = Number((r3_1Sum/regionsCount).toFixed(1))
+            r3_2Sum = Number((r3_2Sum/regionsCount).toFixed(1))
+            r3_3Sum = Number((r3_3Sum/regionsCount).toFixed(1))
+            r3__sum = Number(((Number(r3_1Sum) + Number(r3_2Sum) + Number(r3_3Sum))/3).toFixed(1))
     
     
             let r4_1Sum = 0
@@ -463,10 +467,10 @@ export default class DataGenerator {
                 r4_3Sum += Number(yearData[month]['delivery_and_quality']['map'][3]['quality'])
     
             }
-            r4_1Sum = (r4_1Sum/regionsCount).toFixed(1)
-            r4_2Sum = (r4_2Sum/regionsCount).toFixed(1)
-            r4_3Sum = (r4_3Sum/regionsCount).toFixed(1)
-            r4__sum = ((Number(r4_1Sum) + Number(r4_2Sum) + Number(r4_3Sum))/3).toFixed(1)
+            r4_1Sum = Number((r4_1Sum/regionsCount).toFixed(1))
+            r4_2Sum = Number((r4_2Sum/regionsCount).toFixed(1))
+            r4_3Sum = Number((r4_3Sum/regionsCount).toFixed(1))
+            r4__sum = Number(((Number(r4_1Sum) + Number(r4_2Sum) + Number(r4_3Sum))/3).toFixed(1))
     
     
             let r5_1Sum = 0
@@ -482,10 +486,10 @@ export default class DataGenerator {
                 r5_3Sum += Number(yearData[month]['delivery_and_quality']['map'][4]['quality'])
     
             }
-            r5_1Sum = (r5_1Sum/regionsCount).toFixed(1)
-            r5_2Sum = (r5_2Sum/regionsCount).toFixed(1)
-            r5_3Sum = (r5_3Sum/regionsCount).toFixed(1)
-            r5__sum = ((Number(r5_1Sum) + Number(r5_2Sum) + Number(r5_3Sum))/3).toFixed(1)
+            r5_1Sum = Number((r5_1Sum/regionsCount).toFixed(1))
+            r5_2Sum = Number((r5_2Sum/regionsCount).toFixed(1))
+            r5_3Sum = Number((r5_3Sum/regionsCount).toFixed(1))
+            r5__sum = Number(((Number(r5_1Sum) + Number(r5_2Sum) + Number(r5_3Sum))/3).toFixed(1))
     
     
             let r6_1Sum = 0
@@ -501,10 +505,10 @@ export default class DataGenerator {
                 r6_3Sum += Number(yearData[month]['delivery_and_quality']['map'][5]['quality'])
     
             }
-            r6_1Sum = (r6_1Sum/regionsCount).toFixed(1)
-            r6_2Sum = (r6_2Sum/regionsCount).toFixed(1)
-            r6_3Sum = (r6_3Sum/regionsCount).toFixed(1)
-            r6__sum = ((Number(r6_1Sum) + Number(r6_2Sum) + Number(r6_3Sum))/3).toFixed(1)
+            r6_1Sum = Number((r6_1Sum/regionsCount).toFixed(1))
+            r6_2Sum = Number((r6_2Sum/regionsCount).toFixed(1))
+            r6_3Sum = Number((r6_3Sum/regionsCount).toFixed(1))
+            r6__sum = Number(((Number(r6_1Sum) + Number(r6_2Sum) + Number(r6_3Sum))/3).toFixed(1))
     
     
     
@@ -521,10 +525,10 @@ export default class DataGenerator {
                 r7_3Sum += Number(yearData[month]['delivery_and_quality']['map'][6]['quality'])
     
             }
-            r7_1Sum = (r7_1Sum/regionsCount).toFixed(1)
-            r7_2Sum = (r7_2Sum/regionsCount).toFixed(1)
-            r7_3Sum = (r7_3Sum/regionsCount).toFixed(1)
-            r7__sum = ((Number(r7_1Sum) + Number(r7_2Sum) + Number(r7_3Sum))/3).toFixed(1)
+            r7_1Sum = Number((r7_1Sum/regionsCount).toFixed(1))
+            r7_2Sum = Number((r7_2Sum/regionsCount).toFixed(1))
+            r7_3Sum = Number((r7_3Sum/regionsCount).toFixed(1))
+            r7__sum = Number(((Number(r7_1Sum) + Number(r7_2Sum) + Number(r7_3Sum))/3).toFixed(1))
     
     
     
@@ -541,10 +545,10 @@ export default class DataGenerator {
                 r8_3Sum += Number(yearData[month]['delivery_and_quality']['map'][7]['quality'])
     
             }
-            r8_1Sum = (r8_1Sum/regionsCount).toFixed(1)
-            r8_2Sum = (r8_2Sum/regionsCount).toFixed(1)
-            r8_3Sum = (r8_3Sum/regionsCount).toFixed(1)
-            r8__sum = ((Number(r8_1Sum) + Number(r8_2Sum) + Number(r8_3Sum))/3).toFixed(1)
+            r8_1Sum = Number((r8_1Sum/regionsCount).toFixed(1))
+            r8_2Sum = Number((r8_2Sum/regionsCount).toFixed(1))
+            r8_3Sum = Number((r8_3Sum/regionsCount).toFixed(1))
+            r8__sum = Number(((Number(r8_1Sum) + Number(r8_2Sum) + Number(r8_3Sum))/3).toFixed(1))
     
     
     
@@ -561,10 +565,10 @@ export default class DataGenerator {
                 r9_3Sum += Number(yearData[month]['delivery_and_quality']['map'][8]['quality'])
     
             }
-            r9_1Sum = (r9_1Sum/regionsCount).toFixed(1)
-            r9_2Sum = (r9_2Sum/regionsCount).toFixed(1)
-            r9_3Sum = (r9_3Sum/regionsCount).toFixed(1)
-            r9__sum = ((Number(r9_1Sum) + Number(r9_2Sum) + Number(r9_3Sum))/3).toFixed(1)
+            r9_1Sum = Number((r9_1Sum/regionsCount).toFixed(1))
+            r9_2Sum = Number((r9_2Sum/regionsCount).toFixed(1))
+            r9_3Sum = Number((r9_3Sum/regionsCount).toFixed(1))
+            r9__sum = Number(((Number(r9_1Sum) + Number(r9_2Sum) + Number(r9_3Sum))/3).toFixed(1))
     
     
     
@@ -581,10 +585,10 @@ export default class DataGenerator {
                 r10_3Sum += Number(yearData[month]['delivery_and_quality']['map'][9]['quality'])
     
             }
-            r10_1Sum = (r10_1Sum/regionsCount).toFixed(1)
-            r10_2Sum = (r10_2Sum/regionsCount).toFixed(1)
-            r10_3Sum = (r10_3Sum/regionsCount).toFixed(1)
-            r10__sum = ((Number(r10_1Sum) + Number(r10_2Sum) + Number(r10_3Sum))/3).toFixed(1)
+            r10_1Sum = Number((r10_1Sum/regionsCount).toFixed(1))
+            r10_2Sum = Number((r10_2Sum/regionsCount).toFixed(1))
+            r10_3Sum = Number((r10_3Sum/regionsCount).toFixed(1))
+            r10__sum = Number(((Number(r10_1Sum) + Number(r10_2Sum) + Number(r10_3Sum))/3).toFixed(1))
     
     
     
@@ -601,10 +605,10 @@ export default class DataGenerator {
                 r11_3Sum += Number(yearData[month]['delivery_and_quality']['map'][10]['quality'])
     
             }
-            r11_1Sum = (r11_1Sum/regionsCount).toFixed(1)
-            r11_2Sum = (r11_2Sum/regionsCount).toFixed(1)
-            r11_3Sum = (r11_3Sum/regionsCount).toFixed(1)
-            r11__sum = ((Number(r11_1Sum) + Number(r11_2Sum) + Number(r11_3Sum))/3).toFixed(1)
+            r11_1Sum = Number((r11_1Sum/regionsCount).toFixed(1))
+            r11_2Sum = Number((r11_2Sum/regionsCount).toFixed(1))
+            r11_3Sum = Number((r11_3Sum/regionsCount).toFixed(1))
+            r11__sum = Number(((Number(r11_1Sum) + Number(r11_2Sum) + Number(r11_3Sum))/3).toFixed(1))
     
             const del_n_qual_all = {
                 "produced": produced,
@@ -710,12 +714,12 @@ export default class DataGenerator {
                         "value": [169, 67, r11__sum]
                     }
                 ],
-                "produced_diff": "0",
-                "produced_diff_color": "0",
-                "shipped_diff": "0",
-                "shipped_diff_color": "0",
-                "defective_diff": "0",
-                "defective_diff_color": "0"
+                "produced_diff": 0,
+                "produced_diff_color": 2,
+                "shipped_diff": 0,
+                "shipped_diff_color": 2,
+                "defective_diff": 0,
+                "defective_diff_color": 2
             }
     
     
@@ -727,16 +731,16 @@ export default class DataGenerator {
         
     }
 
-    generateMonthSumAllFilterData = (rawData) => {
-        for (let type in rawData) {
-            for (let year in rawData[type]) {
-                rawData[type][year]['all'] = this.sumDataByMonthsFilter(rawData[type][year]);
+    generateMonthSumAllFilterData = () => {
+        for (let type in this.resultTemplate) {
+            for (let year in this.resultTemplate[type]) {
+                this.resultTemplate[type][year]['all'] = this.sumDataByMonthsFilter(this.resultTemplate[type][year]);
             }
         }
-        return rawData;
+        return this.resultTemplate;
     }
     
-    sumDataByIndustryTypesFilter() {
+    generateIndustryTypesSumAllFilterData() {
         // first mock
         let resultAllData = JSON.parse(JSON.stringify(this.resultTemplate['pipes']));
         for (let year in resultAllData) {
@@ -746,121 +750,121 @@ export default class DataGenerator {
                         // +
                         let defectiveSum = 0
                         for (let type of mappers.industrialTypes) {
-                            defectiveSum += this.resultTemplate[type][year][month]['delivery_and_quality']['defective']
+                            defectiveSum += this.resultTemplate[type][year][month][tab]['defective']
                         }
-                        resultAllData[year][month]['delivery_and_quality']['defective'] = defectiveSum/4;
+                        resultAllData[year][month][tab]['defective'] = defectiveSum/4;
                         // todo change percent logic
                         let defectiveDiffSum = 0
                         for (let type of mappers.industrialTypes) {
                             // defectiveDiffSum += this.resultTemplate[type][year][month]['delivery_and_quality']['defective_diff']
                         }
-                        resultAllData[year][month]['delivery_and_quality']['defective_diff'] = defectiveDiffSum;
-                        // todo make defective diff color logic
+                        resultAllData[year][month][tab]['defective_diff'] = defectiveDiffSum;
+                        // todo make defective diff color logicresult[type]
                         let defectiveDiffColor = 2
-                        resultAllData[year][month]['delivery_and_quality']['defective_diff_color'] = defectiveDiffColor;
+                        resultAllData[year][month][tab]['defective_diff_color'] = defectiveDiffColor;
 
-                        let map = resultAllData[year][month]['delivery_and_quality']['map']
+                        let map = resultAllData[year][month][tab]['map']
                         map.map(item => {
                             let itemTime = 0
                             for (let type of mappers.industrialTypes) {
-                                itemTime += Number(this.resultTemplate[type][year][month]['delivery_and_quality']['map'].find(el => el.name == item.name).timeliness);
+                                itemTime += Number(this.resultTemplate[type][year][month][tab]['map'].find(el => el.name == item.name).timeliness);
                             }
-                            itemTime = Number(itemTime/types.length).toFixed(1)
-                            item.timeliness = itemTime
+                            itemTime = Number(itemTime/mappers.industrialTypes.length).toFixed(1)
+                            item.timeliness = Number(itemTime)
 
                             let itemEq = 0
                             for (let type of mappers.industrialTypes) {
-                                itemEq += Number(this.resultTemplate[type][year][month]['delivery_and_quality']['map'].find(el => el.name == item.name).equipment);
+                                itemEq += Number(this.resultTemplate[type][year][month][tab]['map'].find(el => el.name == item.name).equipment);
                             }
-                            itemEq = Number(itemTime/types.length).toFixed(1)
-                            item.equipment = itemEq
+                            itemEq = Number(itemTime/mappers.industrialTypes.length).toFixed(1)
+                            item.equipment = Number(itemEq)
 
                             let itemQu = 0
                             for (let type of mappers.industrialTypes) {
-                                itemQu += Number(this.resultTemplate[type][year][month]['delivery_and_quality']['map'].find(el => el.name == item.name).quality);
+                                itemQu += Number(this.resultTemplate[type][year][month][tab]['map'].find(el => el.name == item.name).quality);
                             }
-                            itemQu = Number(itemQu/types.length).toFixed(1)
-                            item.quality = itemQu
-                            item.value[2] = ((Number(itemQu) + Number(itemEq) + Number(itemTime))/3).toFixed(1)
+                            itemQu = Number(itemQu/mappers.industrialTypes.length).toFixed(1)
+                            item.quality = Number(itemQu)
+                            item.value[2] = Number(((Number(itemQu) + Number(itemEq) + Number(itemTime))/3).toFixed(1))
                         })    
-                        resultAllData[year][month]['delivery_and_quality']['map'] = map;
+                        resultAllData[year][month][tab]['map'] = map;
 
                         let producedSum = 0
                         for (let type of mappers.industrialTypes) {
-                            producedSum += this.resultTemplate[type][year][month]['delivery_and_quality']['produced']
+                            producedSum += this.resultTemplate[type][year][month][tab]['produced']
                         }
-                        resultAllData[year][month]['delivery_and_quality']['produced'] = producedSum;
+                        resultAllData[year][month][tab]['produced'] = producedSum;
 
-                        let producedConsolidatedPlanSum = resultAllData[year][month]['delivery_and_quality']['produced_consolidated']['plan']
+                        let producedConsolidatedPlanSum = resultAllData[year][month][tab]['produced_consolidated']['plan']
                         for (let month in producedConsolidatedPlanSum) {
                             for (let day in producedConsolidatedPlanSum[month]) {
                                 let sum = 0
                                 for (let type of mappers.industrialTypes) {
-                                    sum += this.resultTemplate[type][year][month]['delivery_and_quality']['produced_consolidated']['plan'][month][day]
+                                    sum += this.resultTemplate[type][year][month][tab]['produced_consolidated']['plan'][month][day]
                                 }
                                 producedConsolidatedPlanSum[month][day] = sum
                             }
                         }
-                        resultAllData[year][month]['delivery_and_quality']['produced_consolidated']['plan'] = producedConsolidatedPlanSum;
+                        resultAllData[year][month][tab]['produced_consolidated']['plan'] = producedConsolidatedPlanSum;
 
-                        let producedConsolidatedFactSum = resultAllData[year][month]['delivery_and_quality']['produced_consolidated']['fact']
+                        let producedConsolidatedFactSum = resultAllData[year][month][tab]['produced_consolidated']['fact']
                         for (let month in producedConsolidatedFactSum) {
                             for (let day in producedConsolidatedFactSum[month]) {
                                 let sum = 0
                                 for (let type of mappers.industrialTypes) {
-                                    sum += this.resultTemplate[type][year][month]['delivery_and_quality']['produced_consolidated']['fact'][month][day]
+                                    sum += this.resultTemplate[type][year][month][tab]['produced_consolidated']['fact'][month][day]
                                 }
                                 producedConsolidatedFactSum[month][day] = sum
                             }
                         }
-                        resultAllData[year][month]['delivery_and_quality']['produced_consolidated']['fact'] = producedConsolidatedFactSum;
+                        resultAllData[year][month][tab]['produced_consolidated']['fact'] = producedConsolidatedFactSum;
 
                         // todo change percent diff
                         let producedDiff = 0
                         for (let type of mappers.industrialTypes) {
                             // producedDiff += this.resultTemplate[type][year][month]['delivery_and_quality']['produced_diff']
                         }
-                        resultAllData[year][month]['delivery_and_quality']['produced_diff'] = producedDiff;
+                        resultAllData[year][month][tab]['produced_diff'] = producedDiff;
 
                         // todo create color logic
                         let producedDiffColor = 2
-                        resultAllData[year][month]['delivery_and_quality']['produced_diff_color'] = producedDiffColor;
+                        resultAllData[year][month][tab]['produced_diff_color'] = producedDiffColor;
 
                         let requisitions = []
                         for (let type of mappers.industrialTypes) {
-                            requisitions = [...requisitions, ...this.resultTemplate[type][year][month]['delivery_and_quality']['requisitions']]
+                            requisitions = [...requisitions, ...this.resultTemplate[type][year][month][tab]['requisitions']]
                         }
-                        resultAllData[year][month]['delivery_and_quality']['requisitions'] = requisitions;
+                        resultAllData[year][month][tab]['requisitions'] = requisitions;
 
                         let shippedSum = 0
                         for (let type of mappers.industrialTypes) {
-                            shippedSum += this.resultTemplate[type][year][month]['delivery_and_quality']['shipped']
+                            shippedSum += this.resultTemplate[type][year][month][tab]['shipped']
                         }
-                        resultAllData[year][month]['delivery_and_quality']['shipped'] = shippedSum;
+                        resultAllData[year][month][tab]['shipped'] = shippedSum;
 
-                        let shippedConsolidatedFactSum = resultAllData[year][month]['delivery_and_quality']['shipped_consolidated']['fact']
+                        let shippedConsolidatedFactSum = resultAllData[year][month][tab]['shipped_consolidated']['fact']
                         for (let month in shippedConsolidatedFactSum) {
                             for (let day in shippedConsolidatedFactSum[month]) {
                                 let sum = 0
                                 for (let type of mappers.industrialTypes) {
-                                    sum += this.resultTemplate[type][year][month]['delivery_and_quality']['shipped_consolidated']['fact'][month][day]
+                                    sum += this.resultTemplate[type][year][month][tab]['shipped_consolidated']['fact'][month][day]
                                 }
                                 shippedConsolidatedFactSum[month][day] = sum
                             }
                         }
-                        resultAllData[year][month]['delivery_and_quality']['shipped_consolidated']['fact'] = shippedConsolidatedFactSum;
+                        resultAllData[year][month][tab]['shipped_consolidated']['fact'] = shippedConsolidatedFactSum;
 
-                        let shippedConsolidatedPlanSum = resultAllData[year][month]['delivery_and_quality']['shipped_consolidated']['plan']
+                        let shippedConsolidatedPlanSum = resultAllData[year][month][tab]['shipped_consolidated']['plan']
                         for (let month in shippedConsolidatedPlanSum) {
                             for (let day in shippedConsolidatedPlanSum[month]) {
                                 let sum = 0
                                 for (let type of mappers.industrialTypes) {
-                                    sum += this.resultTemplate[type][year][month]['delivery_and_quality']['shipped_consolidated']['plan'][month][day]
+                                    sum += this.resultTemplate[type][year][month][tab]['shipped_consolidated']['plan'][month][day]
                                 }
                                 shippedConsolidatedPlanSum[month][day] = sum
                             }
                         }
-                        resultAllData[year][month]['delivery_and_quality']['shipped_consolidated']['plan'] = shippedConsolidatedPlanSum;
+                        resultAllData[year][month][tab]['shipped_consolidated']['plan'] = shippedConsolidatedPlanSum;
 
 
                         // todo change percent diff
@@ -868,10 +872,10 @@ export default class DataGenerator {
                         for (let type of mappers.industrialTypes) {
                             // shippedDiff += this.resultTemplate[type][year][month]['delivery_and_quality']['shipped_diff']
                         }
-                        resultAllData[year][month]['delivery_and_quality']['shipped_diff'] = shippedDiff;
+                        resultAllData[year][month][tab]['shipped_diff'] = shippedDiff;
                         // todo create color logic
-                        let shippedDiffColor = 2
-                        resultAllData[year][month]['delivery_and_quality']['shipped_diff_color'] = shippedDiffColor;
+                        let shippedDiffColor = 2    
+                        resultAllData[year][month][tab]['shipped_diff_color'] = shippedDiffColor;
                     }
                     if (tab == 'finance') {
                         let EBITDASum = 0
@@ -975,7 +979,6 @@ export default class DataGenerator {
                             profitabilitySum[month] = Number((sum/4).toFixed(2))
                         }
                         resultAllData[year][month][tab]['profit_consolidated']['profitability'] = profitabilitySum;
-
 
                         let profitabilityMonthConsolidatedSum = resultAllData[year][month][tab]['profit_consolidated']['profitability_month_detalized']
                         for (let month in profitabilityMonthConsolidatedSum) {
@@ -1087,7 +1090,7 @@ export default class DataGenerator {
                             for (let type of mappers.industrialTypes) {
                                 sum += this.resultTemplate[type][year][month][tab]['employee_satisfaction'][status]
                             }
-                            satisSum[status] = sum/types.length
+                            satisSum[status] = sum/mappers.industrialTypes.length
                         }
                         resultAllData[year][month][tab]['employee_satisfaction'] = satisSum;
 
@@ -1098,7 +1101,7 @@ export default class DataGenerator {
                                 for (let type of mappers.industrialTypes) {
                                     sum += this.resultTemplate[type][year][month][tab]['equipment_lifetime'][key][status]
                                 }
-                                eqSum[status] = sum/types.length
+                                eqSum[status] = sum/mappers.industrialTypes.length
                             }
                             resultAllData[year][month][tab]['equipment_lifetime'][key] = eqSum;
                         }
@@ -1210,10 +1213,176 @@ export default class DataGenerator {
             }
         }
         this.resultTemplate['all'] = resultAllData;
-        return true;
+        return this.resultTemplate;
     }
 
-    generateIndustryTypesSumAllFilterData = () => {
-        this.sumDataByIndustryTypesFilter();
-    };
+    generateLetterColors = () => {
+        for (let type in this.resultTemplate) {
+            for (let year in this.resultTemplate[type]) {
+                for (let month in this.resultTemplate[type][year]) {
+                    let profitability = this.resultTemplate[type][year][month]['finance']['profit_consolidated']['profitability']
+                    let p_res = 0
+                    let counter = 0
+                    for (let key in profitability) {
+                        counter++;
+                        p_res += profitability[key]
+                    }
+                    profitability = p_res/counter
+                    let cColor = (profitability <= 5) ? 3 : (profitability <= 20) ? 2 : 1;
+        
+        
+                    counter = 0
+                    let timeliness = 0
+                    this.resultTemplate[type][year][month]['delivery_and_quality']['map'].forEach(item => {
+                        timeliness += item.timeliness
+                        counter++
+                    })
+        
+                    timeliness = timeliness/counter
+                    let dColor = (timeliness <= 3) ? 3 : (timeliness <= 4) ? 2 : 1;
+        
+        
+        
+                    counter = 0
+                    let defective = this.resultTemplate[type][year][month]['delivery_and_quality']['defective']
+                    let qColor = (defective <= 5) ? 1 : (defective <= 10) ? 2 : 3;
+        
+        
+                    counter = 0
+                    let incidents = this.resultTemplate[type][year][month]['security_and_morale']['incident_categories']['trauma'] / (this.resultTemplate[type][year][month]['security_and_morale']['incident_categories']['trauma'] + this.resultTemplate[type][year][month]['security_and_morale']['incident_categories']['outage']) * 100
+                    let sColor = (incidents <= 5) ? 1 : (incidents <= 10) ? 2 : 3;
+        
+                    
+                    counter = 0
+                    let fluidity = this.resultTemplate[type][year][month]['security_and_morale']['fluidity']
+                    let mColor = (fluidity <= 25) ? 1 : (fluidity <= 50) ? 2 : 3;
+        
+        
+                    
+                    this.resultTemplate[type][year][month]['letters_color'] = {
+                        'c': cColor,
+                        'd': dColor,
+                        'q': qColor,
+                        's': sColor,
+                        'm': mColor
+                    }
+        
+                    if (year == 2023 && month == 'all') {
+                        // console.log(fluidity)
+                        // console.log(incidents)
+                        // console.log(profitability)
+                    }
+                }
+            }
+        }
+    }
+
+    calculateDiffLocal = (prevMonthData, currMonthData, isFirst = false) => {
+        // 1 - зеленый
+        // 2 - желтый
+        // 3 - красный
+        if (!isFirst) {
+            const calcDiffOper = (curr, prev, isPercentage = false) => {
+                let diffValue
+                let diffColor = 2;
+                diffValue = curr - prev;
+                if (isPercentage) {
+                    if (diffValue > 0) {
+                        diffColor = 3
+                    }
+                    if (diffValue < 0) {
+                        diffColor = 1
+                        diffValue = -diffValue
+                    }
+                    return [diffValue, diffColor]
+                }
+                let diff = 0;
+                if (prev == 0) {
+                    diff = diffValue
+                } else {
+                    diff = diffValue / prev * 100;
+                }
+                if (diff > 40) {
+                    diffColor = 1
+                }
+                if (diff < 0) {
+                    diffColor = 3
+                    diff = -diff
+                }
+                return [diff, diffColor]
+            }
+            // delivery
+            let [defectiveDiff, defectiveDiffColor] = calcDiffOper(currMonthData.delivery_and_quality.defective, prevMonthData.delivery_and_quality.defective, true)
+            currMonthData.delivery_and_quality.defective_diff = defectiveDiff;
+            currMonthData.delivery_and_quality.defective_diff_color = defectiveDiffColor;
+    
+            let [producedDiff, producedDiffColor]= calcDiffOper(currMonthData.delivery_and_quality.produced, prevMonthData.delivery_and_quality.produced);
+            currMonthData.delivery_and_quality.produced_diff = producedDiff;
+            currMonthData.delivery_and_quality.produced_diff_color = producedDiffColor;
+    
+            let [shippedDiff, shippedDiffColor]= calcDiffOper(currMonthData.delivery_and_quality.shipped, prevMonthData.delivery_and_quality.shipped);
+            currMonthData.delivery_and_quality.shipped_diff = shippedDiff;
+            currMonthData.delivery_and_quality.shipped_diff_color = shippedDiffColor;
+    
+            //finance
+            let [EBITDADiff, EBITDADiffColor]= calcDiffOper(currMonthData.finance.EBITDA, prevMonthData.finance.EBITDA);
+            currMonthData.finance.EBITDA_diff = EBITDADiff;
+            currMonthData.finance.EBITDA_diff_color = EBITDADiffColor;
+    
+            let [expensesDiff, expensesDiffColor]= calcDiffOper(currMonthData.finance.expenses, prevMonthData.finance.expenses, true);
+            currMonthData.finance.expenses_diff = expensesDiff;
+            currMonthData.finance.expenses_diff_color = expensesDiffColor;
+    
+            let [profitDiff, profitDiffColor]= calcDiffOper(currMonthData.finance.profit, prevMonthData.finance.profit);
+            currMonthData.finance.profit_diff = profitDiff;
+            currMonthData.finance.profit_diff_color = profitDiffColor;
+    
+            let [revenueDiff, revenueDiffColor]= calcDiffOper(currMonthData.finance.revenue, prevMonthData.finance.revenue);
+            currMonthData.finance.revenue_diff = revenueDiff;
+            currMonthData.finance.revenue_diff_color = revenueDiffColor;
+    
+            // sec n morale
+            let [hoursDiff, hoursDiffColor]= calcDiffOper(currMonthData.security_and_morale.additional_shifts_hours, prevMonthData.security_and_morale.additional_shifts_hours);
+            currMonthData.security_and_morale.additional_shifts_hours_diff_percent = hoursDiff;
+            currMonthData.security_and_morale.additional_shifts_hours_diff_percent_color = hoursDiffColor;
+    
+            let [fluidityDiff, fluidityDiffColor]= calcDiffOper(currMonthData.security_and_morale.fluidity, prevMonthData.security_and_morale.fluidity, true);
+            currMonthData.security_and_morale.fluidity_diff_percent = fluidityDiff;
+            currMonthData.security_and_morale.fluidity_diff_percent_color = fluidityDiffColor;
+    
+            let [numberDiff, numberDiffColor]= calcDiffOper(currMonthData.security_and_morale.number, prevMonthData.security_and_morale.number);
+            currMonthData.security_and_morale.number_diff_percent = numberDiff;
+            currMonthData.security_and_morale.number_diff_percent_color = numberDiffColor;
+        }
+    }
+
+    calculateDiffGlobal = () => {
+        // calc for each month at first
+        for (let type in this.resultTemplate) {
+            for (let year = this.yearStart; year <= this.yearEnd; year++) {
+                for (let month = 1; month <= 12; month++) {
+                    if (month == 1) {
+                        let prevYear = year-1
+                        if (prevYear >= this.yearStart) {
+                            this.calculateDiffLocal(this.resultTemplate[type][prevYear][12], this.resultTemplate[type][year][month])
+                        } else {
+                            this.calculateDiffLocal(null, null, true)
+                        }
+                    } else {
+                        this.calculateDiffLocal(this.resultTemplate[type][year][month-1], this.resultTemplate[type][year][month])
+                    }
+                }
+            }
+        }
+        // and calc for each year summary
+        for (let type in this.resultTemplate) {
+            for (let year = this.yearStart; year <= this.yearEnd; year++) {
+                let prevYear = year-1
+                if (prevYear >= this.yearStart) {
+                    this.calculateDiffLocal(this.resultTemplate[type][year-1]['all'], this.resultTemplate[type][year]['all'])
+                }
+            }
+        }
+
+    }
 }

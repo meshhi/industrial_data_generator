@@ -76,4 +76,4 @@ class MoraleGenerator {
     }
 }
 
-export default new MoraleGenerator();
+export default MoraleGenerator;
