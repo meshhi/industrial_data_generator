@@ -6,6 +6,6 @@ const generateDataFile = () => {
     const data = dataGenerator.generateData();
 
     fileWriter.writeFile(data, 'test');
+    fileWriter.writeFileProduction(data, null);
 };
-
 generateDataFile();
