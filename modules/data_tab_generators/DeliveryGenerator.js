@@ -2,6 +2,11 @@ import generateYearMonthByDaysStructure from '../utils/generateYearMonthByDaysSt
 import mappers from '../utils/mappers.js';
 
 class DeliveryGenerator {
+    static yearPlanProduced = {};
+    static yearFactProduced = {};
+    static yearPlanProducedSummaryValue = {};
+    static yearFactProducedSummaryValue = {};
+
     constructor() {
         this.structure = {
             "produced": 0,
@@ -27,12 +32,59 @@ class DeliveryGenerator {
     }
 
     generateData(custom, type, year, month) {
-        this.structure.requisitions = this.generateRequisitions(custom, type, 10, year, month);
-        this.structure.map = this.generateMap();
-        this.structure.produced_consolidated.plan = generateYearMonthByDaysStructure(year, month)
-        this.structure.produced_consolidated.fact = generateYearMonthByDaysStructure(year, month)
+        // PRODUCED
+        // PLAN
+        if (!DeliveryGenerator.yearPlanProduced[year]) {
+            DeliveryGenerator.yearPlanProduced[year] = generateYearMonthByDaysStructure(year, month)
+            DeliveryGenerator.yearPlanProducedSummaryValue[year] = {};
+            for (let month in DeliveryGenerator.yearPlanProduced[year]) {
+                for (let day in DeliveryGenerator.yearPlanProduced[year][month]) {
+                    let currentDayValue = Math.round(Math.random() * (500-300) + 300);
+                    DeliveryGenerator.yearPlanProduced[year][month][day] = currentDayValue;
+                    if (!DeliveryGenerator.yearPlanProducedSummaryValue[year][month]) {
+                        DeliveryGenerator.yearPlanProducedSummaryValue[year][month] = 0;
+                    }
+                    DeliveryGenerator.yearPlanProducedSummaryValue[year][month] += currentDayValue;
+                }
+            }
+        }
+        // FACT
+        if (!DeliveryGenerator.yearFactProduced[year]) {
+            DeliveryGenerator.yearFactProduced[year] = generateYearMonthByDaysStructure(year, month)
+            DeliveryGenerator.yearFactProducedSummaryValue[year] = {};
+            for (let month in DeliveryGenerator.yearFactProduced[year]) {
+                for (let day in DeliveryGenerator.yearFactProduced[year][month]) {
+                    let currentDayValue = Math.round(Math.random() * (500-300) + 300);
+                    const currentDate = new Date();
+                    const currentYear = currentDate.getFullYear();
+                    const currentMonth = currentDate.getMonth() + 1;
+                    const currentDay = currentDate.getDate();
+                    if ((year > currentYear) || ((year == currentYear) && (month > currentMonth)) || ((year == currentYear) && (month == currentMonth) && (day > currentDay))) {
+                        currentDayValue = 0;
+                    }
+                    DeliveryGenerator.yearFactProduced[year][month][day] = currentDayValue;
+                    if (!DeliveryGenerator.yearFactProducedSummaryValue[year][month]) {
+                        DeliveryGenerator.yearFactProducedSummaryValue[year][month] = 0;
+                    }
+                    DeliveryGenerator.yearFactProducedSummaryValue[year][month] += currentDayValue;
+                }
+            }
+        }
+        this.structure.produced_consolidated.plan = DeliveryGenerator.yearPlanProduced[year]
+        this.structure.produced_consolidated.fact = DeliveryGenerator.yearFactProduced[year]
+
+        this.structure.produced = DeliveryGenerator.yearFactProducedSummaryValue[year][month];
+
+        // SHIPPED
+
         this.structure.shipped_consolidated.plan = generateYearMonthByDaysStructure(year, month)
         this.structure.shipped_consolidated.fact = generateYearMonthByDaysStructure(year, month)
+
+
+        // REQUISITIONS
+        this.structure.requisitions = this.generateRequisitions(custom, type, 10, year, month);
+        // MAP
+        this.structure.map = this.generateMap();
         return this.structure;
     }
 
