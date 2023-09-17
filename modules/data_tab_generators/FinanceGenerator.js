@@ -1,4 +1,5 @@
 import generateYearMonthByDaysStructure from '../utils/generateYearMonthByDaysStructure.js';
+import howMuchDays from '../utils/howMuchDays.js';
 import mappers from '../utils/mappers.js';
 
 class FinanceGenerator {
@@ -7,6 +8,18 @@ class FinanceGenerator {
     static yearPlanRevenueSummaryValue = {};
     static yearFactRevenueSummaryValue = {};
 
+    static yearPlanEBITDA = {};
+    static yearFactEBITDA = {};
+    static yearPlanEBITDASummaryValue = {};
+    static yearFactEBITDASummaryValue = {};
+
+    static yearPlanProfit = {};
+    static yearFactProfit = {};
+    static yearPlanProfitSummaryValue = {};
+    static yearFactProfitSummaryValue = {};
+
+    static yearFactProfitability = {};
+    static yearFactProfitabilitySummaryValue = {};
     constructor() {
         this.structure = {
             "revenue": 0,
@@ -99,28 +112,144 @@ class FinanceGenerator {
         this.structure.revenue_consolidated.fact = FinanceGenerator.yearFactRevenue[type][year];
         this.structure.revenue = FinanceGenerator.yearFactRevenueSummaryValue[type][year][month];
 
-
-        // this.structure.produced = DeliveryGenerator.yearFactProducedSummaryValue[type][year][month];
-
-        this.structure.profit_consolidated.EBITDA = generateYearMonthByDaysStructure(year, month)
-        this.structure.profit_consolidated.profit = generateYearMonthByDaysStructure(year, month)
-        // 
-        this.structure.profit_consolidated.profitability = {
-            1: 1,
-            2: 3,
-            3: 5,
-            4: 7,
-            5: 9,
-            6: 11,
-            7: 13,
-            8: 15,
-            9: 17,
-            10: 19,
-            11: 21,
-            12: 23,
+        // EBITDA
+        // PLAN
+        if (!FinanceGenerator.yearPlanEBITDA[type]) {
+            FinanceGenerator.yearPlanEBITDA[type] = {};
         }
-        // 
-        this.structure.profit_consolidated.profitability_month_detalized = generateYearMonthByDaysStructure(year, month)
+        if (!FinanceGenerator.yearPlanEBITDASummaryValue[type]) {
+            FinanceGenerator.yearPlanEBITDASummaryValue[type] = {};
+        }
+        if (!FinanceGenerator.yearPlanEBITDA[type][year]) {
+            FinanceGenerator.yearPlanEBITDA[type][year] = generateYearMonthByDaysStructure(year, month)
+            FinanceGenerator.yearPlanEBITDASummaryValue[type][year] = {};
+            for (let month in FinanceGenerator.yearPlanEBITDA[type][year]) {
+                for (let day in FinanceGenerator.yearPlanEBITDA[type][year][month]) {
+                    let revenueVal = FinanceGenerator.yearPlanRevenue[type][year][month][day];
+                    let currentDayValue = Math.round(Math.random() * (revenueVal-(revenueVal*0,3)) + (revenueVal*0,3));
+                    FinanceGenerator.yearPlanEBITDA[type][year][month][day] = currentDayValue;
+                    if (!FinanceGenerator.yearPlanEBITDASummaryValue[type][year][month]) {
+                        FinanceGenerator.yearPlanEBITDASummaryValue[type][year][month] = 0;
+                    }
+                    FinanceGenerator.yearPlanEBITDASummaryValue[type][year][month] += currentDayValue;
+                }
+            }
+        }
+        // FACT
+        if (!FinanceGenerator.yearFactEBITDA[type]) {
+            FinanceGenerator.yearFactEBITDA[type] = {};
+        }
+        if (!FinanceGenerator.yearFactEBITDASummaryValue[type]) {
+            FinanceGenerator.yearFactEBITDASummaryValue[type] = {};
+        }
+        if (!FinanceGenerator.yearFactEBITDA[type][year]) {
+            FinanceGenerator.yearFactEBITDA[type][year] = generateYearMonthByDaysStructure(year, month)
+            FinanceGenerator.yearFactEBITDASummaryValue[type][year] = {};
+            for (let month in FinanceGenerator.yearFactEBITDA[type][year]) {
+                for (let day in FinanceGenerator.yearFactEBITDA[type][year][month]) {
+                    let revenueVal = FinanceGenerator.yearFactRevenue[type][year][month][day];
+                    let currentDayValue = Math.round(Math.random() * (revenueVal-(revenueVal*0,3)) + (revenueVal*0,3));
+                    const currentDate = new Date();
+                    const currentYear = currentDate.getFullYear();
+                    const currentMonth = currentDate.getMonth() + 1;
+                    const currentDay = currentDate.getDate();
+                    
+                    if ((year > currentYear) || ((year == currentYear) && (month > currentMonth)) || ((year == currentYear) && (month == currentMonth) && (day > currentDay))) {
+                        currentDayValue = 0;
+                    }
+                    FinanceGenerator.yearFactEBITDA[type][year][month][day] = currentDayValue;
+                    if (!FinanceGenerator.yearFactEBITDASummaryValue[type][year][month]) {
+                        FinanceGenerator.yearFactEBITDASummaryValue[type][year][month] = 0;
+                    }
+                    FinanceGenerator.yearFactEBITDASummaryValue[type][year][month] += currentDayValue;
+                }
+            }
+        }
+        this.structure.profit_consolidated.EBITDA = FinanceGenerator.yearFactEBITDA[type][year];
+        this.structure.EBITDA = FinanceGenerator.yearFactEBITDASummaryValue[type][year][month];
+
+
+        // PROFIT
+        // PLAN
+        if (!FinanceGenerator.yearPlanProfit[type]) {
+            FinanceGenerator.yearPlanProfit[type] = {};
+        }
+        if (!FinanceGenerator.yearPlanProfitSummaryValue[type]) {
+            FinanceGenerator.yearPlanProfitSummaryValue[type] = {};
+        }
+        if (!FinanceGenerator.yearPlanProfit[type][year]) {
+            FinanceGenerator.yearPlanProfit[type][year] = generateYearMonthByDaysStructure(year, month)
+            FinanceGenerator.yearPlanProfitSummaryValue[type][year] = {};
+            for (let month in FinanceGenerator.yearPlanProfit[type][year]) {
+                for (let day in FinanceGenerator.yearPlanProfit[type][year][month]) {
+                    let revenueVal = FinanceGenerator.yearPlanEBITDA[type][year][month][day];
+                    let currentDayValue = Math.round(Math.random() * (revenueVal-(revenueVal*0,3)) + (revenueVal*0,3));
+                    FinanceGenerator.yearPlanProfit[type][year][month][day] = currentDayValue;
+                    if (!FinanceGenerator.yearPlanProfitSummaryValue[type][year][month]) {
+                        FinanceGenerator.yearPlanProfitSummaryValue[type][year][month] = 0;
+                    }
+                    FinanceGenerator.yearPlanProfitSummaryValue[type][year][month] += currentDayValue;
+                }
+            }
+        }
+        // FACT
+        if (!FinanceGenerator.yearFactProfit[type]) {
+            FinanceGenerator.yearFactProfit[type] = {};
+        }
+        if (!FinanceGenerator.yearFactProfitSummaryValue[type]) {
+            FinanceGenerator.yearFactProfitSummaryValue[type] = {};
+        }
+        if (!FinanceGenerator.yearFactProfitability[type]) {
+            FinanceGenerator.yearFactProfitability[type] = {};
+        }
+        if (!FinanceGenerator.yearFactProfitabilitySummaryValue[type]) {
+            FinanceGenerator.yearFactProfitabilitySummaryValue[type] = {};
+        }
+        if (!FinanceGenerator.yearFactProfit[type][year]) {
+            FinanceGenerator.yearFactProfit[type][year] = generateYearMonthByDaysStructure(year, month)
+            FinanceGenerator.yearFactProfitSummaryValue[type][year] = {};
+
+            FinanceGenerator.yearFactProfitability[type][year] = generateYearMonthByDaysStructure(year, month)
+            FinanceGenerator.yearFactProfitabilitySummaryValue[type][year] = {};
+
+            for (let month in FinanceGenerator.yearFactProfit[type][year]) {
+                for (let day in FinanceGenerator.yearFactProfit[type][year][month]) {
+                    let revenueVal = FinanceGenerator.yearFactEBITDA[type][year][month][day];
+                    let currentDayValue = Math.round(Math.random() * (revenueVal-(revenueVal*0,3)) + (revenueVal*0,3));
+                    const currentDate = new Date();
+                    const currentYear = currentDate.getFullYear();
+                    const currentMonth = currentDate.getMonth() + 1;
+                    const currentDay = currentDate.getDate();
+                    
+                    if ((year > currentYear) || ((year == currentYear) && (month > currentMonth)) || ((year == currentYear) && (month == currentMonth) && (day > currentDay))) {
+                        currentDayValue = 0;
+                    }
+                    FinanceGenerator.yearFactProfit[type][year][month][day] = currentDayValue;
+                    if (!FinanceGenerator.yearFactProfitSummaryValue[type][year][month]) {
+                        FinanceGenerator.yearFactProfitSummaryValue[type][year][month] = 0;
+                    }
+                    FinanceGenerator.yearFactProfitSummaryValue[type][year][month] += currentDayValue;
+
+                    let profitabilityPercent = FinanceGenerator.yearFactProfit[type][year][month][day] / FinanceGenerator.yearFactRevenue[type][year][month][day] * 100;
+                    if (!profitabilityPercent) {
+                        profitabilityPercent = 0;
+                    }
+                    FinanceGenerator.yearFactProfitability[type][year][month][day] = profitabilityPercent;
+                    if (!FinanceGenerator.yearFactProfitabilitySummaryValue[type][year][month]) {
+                        FinanceGenerator.yearFactProfitabilitySummaryValue[type][year][month] = 0;
+                    }
+                    FinanceGenerator.yearFactProfitabilitySummaryValue[type][year][month] += profitabilityPercent/howMuchDays(year, month);
+                }
+            }
+        }
+        this.structure.profit_consolidated.profit = FinanceGenerator.yearFactProfit[type][year];
+        this.structure.profit = FinanceGenerator.yearFactProfitSummaryValue[type][year][month];
+
+        this.structure.profit_consolidated.profitability = FinanceGenerator.yearFactProfitabilitySummaryValue[type][year];
+        this.structure.profit_consolidated.profitability_month_detalized = FinanceGenerator.yearFactProfitability[type][year];
+
+
+
         this.structure.expenses_consolidated.plan = generateYearMonthByDaysStructure(year, month)
         this.structure.expenses_consolidated.fact = generateYearMonthByDaysStructure(year, month)
 
