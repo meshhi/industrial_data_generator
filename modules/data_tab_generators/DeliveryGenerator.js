@@ -1,4 +1,5 @@
 import generateYearMonthByDaysStructure from '../utils/generateYearMonthByDaysStructure.js';
+import howMuchDays from '../utils/howMuchDays.js';
 import mappers from '../utils/mappers.js';
 
 class DeliveryGenerator {
@@ -146,27 +147,36 @@ class DeliveryGenerator {
 
         this.structure.shipped = DeliveryGenerator.yearFactShippedSummaryValue[type][year][month];
         // REQUISITIONS
-        this.structure.requisitions = this.generateRequisitions(custom, type, 10, year, month);
+        this.structure.requisitions = this.generateRequisitions(custom, type, 10, year, month, DeliveryGenerator.yearFactShippedSummaryValue[type][year][month]);
         // MAP
         this.structure.map = this.generateMap();
         return this.structure;
     }
 
-    generateRequisitions(custom = null, type = null, count = 10, year = null, month = null) {
+    generateRequisitions(custom = null, type = null, count = 10, year = null, month = null, totalShipped = 0) {
+        const possibleDays = howMuchDays(year, month);
         const result = [];
         for (let i = 1; i <= count; i++) {
             // 
-            let day = 4;
+            let currentFact = totalShipped/count;
+            let currentPlan = Math.round(currentFact * 100) / 100;
             let color = 2;
-            // 
+            if (currentPlan > currentFact) {
+                color = 3;
+            }
+            if (currentPlan < currentFact) {
+                color = 1;
+            }
+            let dayUpdated = Math.floor(Math.random() * (possibleDays-5) + 5);
+            const deliveryTime = Math.floor(Math.random() * (20 - 1) + 1);
             const requisition = {
-                "requisition_number": `${year}-${i}-${Math.floor(Math.random() * 1000)}`,
+                "requisition_number": `${year}-${month}-${type}-${i}`,
                 "region": mappers.regions[Math.floor(Math.random() * mappers.regions.length)],
                 "product": mappers.industrialTypesTranslate[type],
-                "delivery_time": Math.floor(Math.random() * (20 - 1) + 1),
-                "delivery_date": `${day >= 10 ? day : '0' + String(day)}.${month >= 10 ? month : '0' + String(month)}.${year}`,
-                "plan": 0,
-                "fact": 0,
+                "delivery_time": deliveryTime,
+                "delivery_date": `${dayUpdated >= 10 ? (dayUpdated > possibleDays) ? possibleDays : dayUpdated : '0' + String(dayUpdated)}.${month >= 10 ? month : '0' + String(month)}.${year}`,
+                "plan": currentPlan,
+                "fact": currentFact,
                 "color": color,
                 "non_compliance_reason": (color == 3) ? mappers.reasons[Math.floor(Math.random() * mappers.reasons.length)] : 'Нет'
             }

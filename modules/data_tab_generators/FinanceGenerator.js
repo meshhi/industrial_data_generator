@@ -2,9 +2,14 @@ import generateYearMonthByDaysStructure from '../utils/generateYearMonthByDaysSt
 import mappers from '../utils/mappers.js';
 
 class FinanceGenerator {
+    static yearPlanRevenue = {};
+    static yearFactRevenue = {};
+    static yearPlanRevenueSummaryValue = {};
+    static yearFactRevenueSummaryValue = {};
+
     constructor() {
         this.structure = {
-            "revenue": Math.floor(Math.random() * 1000000),
+            "revenue": 0,
             "profit": 0,
             "EBITDA": 0,
             "expenses": 0,
@@ -40,8 +45,63 @@ class FinanceGenerator {
     }
 
     generateData(custom, type, year, month) {
-        this.structure.revenue_consolidated.plan = generateYearMonthByDaysStructure(year, month)
-        this.structure.revenue_consolidated.fact = generateYearMonthByDaysStructure(year, month)
+        // REVENUE
+        // PLAN
+        if (!FinanceGenerator.yearPlanRevenue[type]) {
+            FinanceGenerator.yearPlanRevenue[type] = {};
+        }
+        if (!FinanceGenerator.yearPlanRevenueSummaryValue[type]) {
+            FinanceGenerator.yearPlanRevenueSummaryValue[type] = {};
+        }
+        if (!FinanceGenerator.yearPlanRevenue[type][year]) {
+            FinanceGenerator.yearPlanRevenue[type][year] = generateYearMonthByDaysStructure(year, month)
+            FinanceGenerator.yearPlanRevenueSummaryValue[type][year] = {};
+            for (let month in FinanceGenerator.yearPlanRevenue[type][year]) {
+                for (let day in FinanceGenerator.yearPlanRevenue[type][year][month]) {
+                    let currentDayValue = Math.round(Math.random() * (500-300) + 300);
+                    FinanceGenerator.yearPlanRevenue[type][year][month][day] = currentDayValue;
+                    if (!FinanceGenerator.yearPlanRevenueSummaryValue[type][year][month]) {
+                        FinanceGenerator.yearPlanRevenueSummaryValue[type][year][month] = 0;
+                    }
+                    FinanceGenerator.yearPlanRevenueSummaryValue[type][year][month] += currentDayValue;
+                }
+            }
+        }
+        // FACT
+        if (!FinanceGenerator.yearFactRevenue[type]) {
+            FinanceGenerator.yearFactRevenue[type] = {};
+        }
+        if (!FinanceGenerator.yearFactRevenueSummaryValue[type]) {
+            FinanceGenerator.yearFactRevenueSummaryValue[type] = {};
+        }
+        if (!FinanceGenerator.yearFactRevenue[type][year]) {
+            FinanceGenerator.yearFactRevenue[type][year] = generateYearMonthByDaysStructure(year, month)
+            FinanceGenerator.yearFactRevenueSummaryValue[type][year] = {};
+            for (let month in FinanceGenerator.yearFactRevenue[type][year]) {
+                for (let day in FinanceGenerator.yearFactRevenue[type][year][month]) {
+                    let currentDayValue = Math.round(Math.random() * (500-300) + 300);
+                    const currentDate = new Date();
+                    const currentYear = currentDate.getFullYear();
+                    const currentMonth = currentDate.getMonth() + 1;
+                    const currentDay = currentDate.getDate();
+                    if ((year > currentYear) || ((year == currentYear) && (month > currentMonth)) || ((year == currentYear) && (month == currentMonth) && (day > currentDay))) {
+                        currentDayValue = 0;
+                    }
+                    FinanceGenerator.yearFactRevenue[type][year][month][day] = currentDayValue;
+                    if (!FinanceGenerator.yearFactRevenueSummaryValue[type][year][month]) {
+                        FinanceGenerator.yearFactRevenueSummaryValue[type][year][month] = 0;
+                    }
+                    FinanceGenerator.yearFactRevenueSummaryValue[type][year][month] += currentDayValue;
+                }
+            }
+        }
+        this.structure.revenue_consolidated.plan = FinanceGenerator.yearPlanRevenue[type][year];
+        this.structure.revenue_consolidated.fact = FinanceGenerator.yearFactRevenue[type][year];
+        this.structure.revenue = FinanceGenerator.yearFactRevenueSummaryValue[type][year][month];
+
+
+        // this.structure.produced = DeliveryGenerator.yearFactProducedSummaryValue[type][year][month];
+
         this.structure.profit_consolidated.EBITDA = generateYearMonthByDaysStructure(year, month)
         this.structure.profit_consolidated.profit = generateYearMonthByDaysStructure(year, month)
         // 
