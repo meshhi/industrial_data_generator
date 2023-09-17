@@ -1257,14 +1257,28 @@ export default class DataGenerator {
                     let fluidity = this.resultTemplate[type][year][month]['security_and_morale']['fluidity']
                     let mColor = (fluidity <= 25) ? 1 : (fluidity <= 50) ? 2 : 3;
         
-        
-                    
+
                     this.resultTemplate[type][year][month]['letters_color'] = {
                         'c': cColor,
                         'd': dColor,
                         'q': qColor,
                         's': sColor,
                         'm': mColor
+                    }
+
+                    // CUSTOM VALUE
+                    if (year == 2023) {
+                        if ((month == 1) || (month == 2) || (month == 3) || (month == 'all')) {
+                            if ((type == 'polycarbonate') || (type == 'all')) {
+                                this.resultTemplate[type][year][month]['letters_color'] = {
+                                    'c': 3,
+                                    'd': 1,
+                                    'q': 1,
+                                    's': 2,
+                                    'm': 2
+                                }
+                            }
+                        }
                     }
         
                     if (year == 2023 && month == 'all') {

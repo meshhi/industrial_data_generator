@@ -95,8 +95,20 @@ class MoraleGenerator {
             }
     
             // EMPLOYMENT SATISFACTION
-            const [satisfactionParts1, satisfactionParts2, satisfactionParts3] = generateRandomParts();
-    
+            let [satisfactionParts1, satisfactionParts2, satisfactionParts3] = generateRandomParts();
+            // CUSTOM VALUE
+            if (year == 2023) {
+                if (month == 1) {
+                    if (type == 'polycarbonate') {
+                        [satisfactionParts1, satisfactionParts2, satisfactionParts3] = [30, 57, 13]
+                    }
+                }
+                if (month == 2) {
+                    if (type == 'polycarbonate') {
+                        [satisfactionParts1, satisfactionParts2, satisfactionParts3] = [45, 50, 5]
+                    }
+                }
+            }
             this.structure.employee_satisfaction.low = satisfactionParts1;
             this.structure.employee_satisfaction.middle = satisfactionParts2;
             this.structure.employee_satisfaction.high = satisfactionParts3;
@@ -123,7 +135,21 @@ class MoraleGenerator {
             this.structure.equipment_lifetime.PE.less_than_1 = part333;
     
             // EQ_PK
-            const [part1111, part2222, part3333] = generateRandomParts();
+            let [part1111, part2222, part3333] = generateRandomParts();
+
+            // CUSTOM VALUE
+            if (year == 2023) {
+                if (month == 1) {
+                    if (type == 'polycarbonate') {
+                        [part1111, part2222, part3333] = [60, 20, 10]
+                    }
+                }
+                if (month == 2) {
+                    if (type == 'polycarbonate') {
+                        [part1111, part2222, part3333] = [30, 20, 50]
+                    }
+                }
+            }
     
             this.structure.equipment_lifetime.PK.more_than_5 = part1111;
             this.structure.equipment_lifetime.PK.from_1_to_5 = part2222;

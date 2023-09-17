@@ -81,6 +81,14 @@ class DeliveryGenerator {
                     if ((year > currentYear) || ((year == currentYear) && (month > currentMonth)) || ((year == currentYear) && (month == currentMonth) && (day > currentDay))) {
                         currentDayValue = 0;
                     }
+                    // CUSTOM VALUE
+                    if (year == 2023) {
+                        if ((month == 1) || (month == 2) || (month == 3)) {
+                            if (type == 'polycarbonate') {
+                                currentDayValue = Math.round(Math.random() * (DeliveryGenerator.yearPlanProduced[type][year][month][day]-DeliveryGenerator.yearPlanProduced[type][year][month][day]*0.3) + DeliveryGenerator.yearPlanProduced[type][year][month][day]*0.3);
+                            }
+                        }
+                    }
                     DeliveryGenerator.yearFactProduced[type][year][month][day] = currentDayValue;
                     if (!DeliveryGenerator.yearFactProducedSummaryValue[type][year][month]) {
                         DeliveryGenerator.yearFactProducedSummaryValue[type][year][month] = 0;
@@ -107,6 +115,16 @@ class DeliveryGenerator {
             for (let month in DeliveryGenerator.yearPlanShipped[type][year]) {
                 for (let day in DeliveryGenerator.yearPlanShipped[type][year][month]) {
                     let currentDayValue = Math.round(Math.random() * (DeliveryGenerator.yearPlanProduced[type][year][month][day]-DeliveryGenerator.yearPlanProduced[type][year][month][day]*0.3) + DeliveryGenerator.yearPlanProduced[type][year][month][day]*0.3);
+                    
+                    // CUSTOM VALUE
+                    if (year == 2023) {
+                        if ((month == 1) || (month == 2) || (month == 3)) {
+                            if (type == 'polycarbonate') {
+                                currentDayValue = Math.round(Math.random() * (DeliveryGenerator.yearPlanProduced[type][year][month][day]-DeliveryGenerator.yearPlanProduced[type][year][month][day]*0.1) + DeliveryGenerator.yearPlanProduced[type][year][month][day]*0.1);
+                            }
+                        }
+                    }
+                    
                     DeliveryGenerator.yearPlanShipped[type][year][month][day] = currentDayValue;
                     if (!DeliveryGenerator.yearPlanShippedSummaryValue[type][year][month]) {
                         DeliveryGenerator.yearPlanShippedSummaryValue[type][year][month] = 0;
@@ -128,6 +146,7 @@ class DeliveryGenerator {
             for (let month in DeliveryGenerator.yearFactShipped[type][year]) {
                 for (let day in DeliveryGenerator.yearFactShipped[type][year][month]) {
                     let currentDayValue = Math.round(Math.random() * (DeliveryGenerator.yearFactProduced[type][year][month][day]-DeliveryGenerator.yearFactProduced[type][year][month][day]*0.3) + DeliveryGenerator.yearFactProduced[type][year][month][day]*0.3);
+                
                     const currentDate = new Date();
                     const currentYear = currentDate.getFullYear();
                     const currentMonth = currentDate.getMonth() + 1;
@@ -135,6 +154,16 @@ class DeliveryGenerator {
                     if ((year > currentYear) || ((year == currentYear) && (month > currentMonth)) || ((year == currentYear) && (month == currentMonth) && (day > currentDay))) {
                         currentDayValue = 0;
                     }
+
+                    // CUSTOM VALUE
+                    if (year == 2023) {
+                        if ((month == 1) || (month == 2) || (month == 3)) {
+                            if (type == 'polycarbonate') {
+                                currentDayValue = Math.round(Math.random() * (DeliveryGenerator.yearPlanShipped[type][year][month][day]-DeliveryGenerator.yearPlanShipped[type][year][month][day]*0.3) + DeliveryGenerator.yearPlanShipped[type][year][month][day]*0.3);
+                            }
+                        }
+                    }
+
                     DeliveryGenerator.yearFactShipped[type][year][month][day] = currentDayValue;
                     if (!DeliveryGenerator.yearFactShippedSummaryValue[type][year][month]) {
                         DeliveryGenerator.yearFactShippedSummaryValue[type][year][month] = 0;
@@ -162,6 +191,16 @@ class DeliveryGenerator {
     
             // DEFECTIVE
             let defectiveVal = DeliveryGenerator.yearFactShippedSummaryValue[type][year][month] * Math.random();
+
+            // CUSTOM VALUE
+            if (year == 2023) {
+                if ((month == 1) || (month == 2) || (month == 3)) {
+                    if (type == 'polycarbonate') {
+                        defectiveVal = DeliveryGenerator.yearFactShippedSummaryValue[type][year][month] * (Math.random() * (0.55 - 0.45) + 0.45);
+                    }
+                }
+            }
+
             this.structure.defective = defectiveVal / DeliveryGenerator.yearFactShippedSummaryValue[type][year][month] * 100;
             if (!this.structure.defective) {
                 this.structure.defective = 0;
@@ -217,9 +256,30 @@ class DeliveryGenerator {
 
         let map = JSON.parse(JSON.stringify(mappers.mapData));
         map = map.map((item) => {
+            // CUSTOM VALUE
             item.timeliness = Number((Math.random() * (5-3) + 3).toFixed(1));
             item.equipment = Number((Math.random() * (5-3) + 3).toFixed(1));
             item.quality = Number((Math.random() * (5-3) + 3).toFixed(1));
+
+            if (year == 2023) {
+                if ((month == 1) || (month == 2) || (month == 3)) {
+                    if (type == 'polycarbonate') {
+                        item.timeliness = Number((Math.random() * (3-1) + 1).toFixed(1));
+                        item.equipment = Number((Math.random() * (3-1) + 1).toFixed(1));
+                        item.quality = Number((Math.random() * (3-1) + 1).toFixed(1));
+                    }
+                }
+
+                if ((month == 1)) {
+                    if (type == 'polycarbonate') {
+                        item.timeliness = Number((Math.random() * (4-3) + 1).toFixed(1));
+                        item.equipment = Number((Math.random() * (4-2) + 1).toFixed(1));
+                        item.quality = Number((Math.random() * (3-1) + 1).toFixed(1));
+                    }
+                }
+            }
+
+
             item.value[2] = Number(((item.timeliness + item.equipment + item.quality) / 3).toFixed(1));
             return item;
         })

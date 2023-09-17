@@ -234,7 +234,7 @@ if (year == 2023) {
             for (let month in FinanceGenerator.yearFactProfit[type][year]) {
                 for (let day in FinanceGenerator.yearFactProfit[type][year][month]) {
                     let revenueVal = FinanceGenerator.yearFactEBITDA[type][year][month][day];
-                    let currentDayValue = Math.round(Math.random() * (revenueVal-(revenueVal*0,3)) + (revenueVal*0,3));
+                    let currentDayValue = Math.round(Math.random() * (revenueVal-(revenueVal*0.3)) + (revenueVal*0.3));
                     const currentDate = new Date();
                     const currentYear = currentDate.getFullYear();
                     const currentMonth = currentDate.getMonth() + 1;
@@ -244,7 +244,7 @@ if (year == 2023) {
                         currentDayValue = 0;
                     }
 
-// CUSTOM VALUE
+                    // CUSTOM VALUE
                     if (year == 2023) {
                         if ((month == 1) || (month == 2) || (month == 3)) {
                             if (type == 'polycarbonate') {
