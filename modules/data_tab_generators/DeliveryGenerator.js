@@ -177,6 +177,8 @@ class DeliveryGenerator {
             // 
             let currentFact = totalShipped/count;
             let currentPlan = Math.round(currentFact * 100) / 100;
+            currentPlan *= Number((Math.random()).toFixed(5));
+            currentFact *= Number((Math.random()).toFixed(5));
             let color = 2;
             if (currentPlan > currentFact) {
                 color = 3;
@@ -187,7 +189,7 @@ class DeliveryGenerator {
             let dayUpdated = Math.floor(Math.random() * (possibleDays-5) + 5);
             const deliveryTime = Math.floor(Math.random() * (20 - 1) + 1);
             const requisition = {
-                "requisition_number": `${year}-${month}-${type}-${i}`,
+                "requisition_number": `${year}-${month}-${Math.floor(Math.random()*10000)}}-${i}`,
                 "region": mappers.regions[Math.floor(Math.random() * mappers.regions.length)],
                 "product": mappers.industrialTypesTranslate[type],
                 "delivery_time": deliveryTime,
@@ -195,7 +197,7 @@ class DeliveryGenerator {
                 "plan": currentPlan,
                 "fact": currentFact,
                 "color": color,
-                "non_compliance_reason": (color == 3) ? mappers.reasons[Math.floor(Math.random() * mappers.reasons.length)] : 'Нет'
+                "non_compliance_reason": (color == 3) ? mappers.requisitionReasons[Math.floor(Math.random() * mappers.requisitionReasons.length)] : 'Нет'
             }
             result.push(requisition)
         }

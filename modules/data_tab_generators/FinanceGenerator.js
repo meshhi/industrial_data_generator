@@ -269,7 +269,7 @@ class FinanceGenerator {
             FinanceGenerator.yearPlanExpensesSummaryValue[type][year] = {};
             for (let month in FinanceGenerator.yearPlanExpenses[type][year]) {
                 for (let day in FinanceGenerator.yearPlanExpenses[type][year][month]) {
-                    let currentDayValue = Math.round(Math.random() * (500-300) + 300);
+                    let currentDayValue = Math.round(Math.random() * (100000-10000) + 10000);
                     FinanceGenerator.yearPlanExpenses[type][year][month][day] = currentDayValue;
                     if (!FinanceGenerator.yearPlanExpensesSummaryValue[type][year][month]) {
                         FinanceGenerator.yearPlanExpensesSummaryValue[type][year][month] = 0;
@@ -290,7 +290,7 @@ class FinanceGenerator {
             FinanceGenerator.yearFactExpensesSummaryValue[type][year] = {};
             for (let month in FinanceGenerator.yearFactExpenses[type][year]) {
                 for (let day in FinanceGenerator.yearFactExpenses[type][year][month]) {
-                    let currentDayValue = Math.round(Math.random() * (700000-300000) + 300000);
+                    let currentDayValue = Math.round(Math.random() * (50000-10000) + 10000);
                     const currentDate = new Date();
                     const currentYear = currentDate.getFullYear();
                     const currentMonth = currentDate.getMonth() + 1;
