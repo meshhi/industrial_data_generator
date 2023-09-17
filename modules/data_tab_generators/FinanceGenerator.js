@@ -290,7 +290,7 @@ class FinanceGenerator {
             FinanceGenerator.yearFactExpensesSummaryValue[type][year] = {};
             for (let month in FinanceGenerator.yearFactExpenses[type][year]) {
                 for (let day in FinanceGenerator.yearFactExpenses[type][year][month]) {
-                    let currentDayValue = Math.round(Math.random() * (200-100) + 100);
+                    let currentDayValue = Math.round(Math.random() * (220000-100000) + 100000);
                     const currentDate = new Date();
                     const currentYear = currentDate.getFullYear();
                     const currentMonth = currentDate.getMonth() + 1;
