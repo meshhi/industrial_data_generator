@@ -1385,4 +1385,8 @@ export default class DataGenerator {
         }
 
     }
+
+    fixSankey() {
+        console.log(this.resultTemplate);
+    }
 }

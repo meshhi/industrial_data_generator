@@ -13,6 +13,7 @@ class DeliveryGenerator {
     static yearPlanShippedSummaryValue = {};
     static yearFactShippedSummaryValue = {};
 
+    static yearMapData = {};
     constructor() {
         this.structure = {
             "produced": 0,
@@ -149,7 +150,14 @@ class DeliveryGenerator {
         // REQUISITIONS
         this.structure.requisitions = this.generateRequisitions(custom, type, 10, year, month, DeliveryGenerator.yearFactShippedSummaryValue[type][year][month]);
         // MAP
-        this.structure.map = this.generateMap();
+        this.structure.map = this.generateMap(custom, type, year, month);
+
+        // DEFECTIVE
+        let defectiveVal = DeliveryGenerator.yearFactShippedSummaryValue[type][year][month] * Math.random();
+        this.structure.defective = defectiveVal / DeliveryGenerator.yearFactShippedSummaryValue[type][year][month] * 100;
+        if (!this.structure.defective) {
+            this.structure.defective = 0;
+        }
         return this.structure;
     }
 
@@ -185,97 +193,27 @@ class DeliveryGenerator {
         return result;
     }
 
-    generateMap() {
-        return [
-            {
-                "name": "Московская область",
-                "okato": "46000000000",
-                "timeliness": 0,
-                "equipment": 0,
-                "quality": 0,
-                "value": [38, 56, 0]
-            },
-            {
-                "name": "Тамбовская область",
-                "okato": "68000000000",
-                "timeliness": 0,
-                "equipment": 0,
-                "quality": 0,
-                "value": [41.5, 52.5, 0]
-            },
-            {
-                "name": "Волгоградская область",
-                "okato": "18000000000",
-                "timeliness": 0,
-                "equipment": 0,
-                "quality": 0,
-                "value": [44.5, 49.5, 0]
-            },
-            {
-                "name": "Томская область",
-                "okato": "69000000000",
-                "timeliness": 0,
-                "equipment": 0,
-                "quality": 0,
-                "value": [81, 58.5, 0]
-            },
-            {
-                "name": "Амурская область",
-                "okato": "10000000000",
-                "timeliness": 0,
-                "equipment": 0,
-                "quality": 0,
-                "value": [128, 54, 0]
-            },
-            {
-                "name": "Красноярский край",
-                "okato": "04000000000",
-                "timeliness": 0,
-                "equipment": 0,
-                "quality": 0,
-                "value": [96, 65, 0]
-            },
-            {
-                "name": "Республика Саха (Якутия)",
-                "okato": "98000000000",
-                "timeliness": 0,
-                "equipment": 0,
-                "quality": 0,
-                "value": [123, 65, 0]
-            },
-            {
-                "name": "Республика Татарстан (Татарстан)",
-                "okato": "92000000000",
-                "timeliness": 0,
-                "equipment": 0,
-                "quality": 0,
-                "value": [52, 55, 0]
-            },
-            {
-                "name": "Архангельская область",
-                "okato": "11000000000",
-                "timeliness": 0,
-                "equipment": 0,
-                "quality": 0,
-                "value": [42, 64, 0]
-            },
-            {
-                "name": "Ненецкий автономный округ",
-                "okato": "11100000000",
-                "timeliness": 0,
-                "equipment": 0,
-                "quality": 0,
-                "value": [55, 68, 0]
-            },
-            {
-                "name": "Чукотский автономный округ",
-                "okato": "77000000000",
-                "timeliness": 0,
-                "equipment": 0,
-                "quality": 0,
-                "value": [169, 67, 0]
-            }
-        ]
+    generateMap(custom = null, type = null, year = null, month = null) {
+        if (!DeliveryGenerator.yearMapData[type]) {
+            DeliveryGenerator.yearMapData[type] = {};
+        }
+        if (!DeliveryGenerator.yearMapData[type][year]) {
+            DeliveryGenerator.yearMapData[type][year] = {};
+        }
+        if (!DeliveryGenerator.yearMapData[type][year][month]) {
+            DeliveryGenerator.yearMapData[type][year][month] = {};
+        }
+
+        let map = JSON.parse(JSON.stringify(mappers.mapData));
+        map = map.map((item) => {
+            item.timeliness = Number((Math.random() * (5-3) + 3).toFixed(1));
+            item.equipment = Number((Math.random() * (5-3) + 3).toFixed(1));
+            item.quality = Number((Math.random() * (5-3) + 3).toFixed(1));
+            item.value[2] = Number(((item.timeliness + item.equipment + item.quality) / 3).toFixed(1));
+            return item;
+        })
+        DeliveryGenerator.yearMapData[type][year][month] = map;
+        return JSON.parse(JSON.stringify(map));
     }
 
 }

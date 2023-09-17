@@ -18,8 +18,16 @@ class FinanceGenerator {
     static yearPlanProfitSummaryValue = {};
     static yearFactProfitSummaryValue = {};
 
+    static yearPlanExpenses = {};
+    static yearFactExpenses = {};
+    static yearPlanExpensesSummaryValue = {};
+    static yearFactExpensesSummaryValue = {};
+
     static yearFactProfitability = {};
     static yearFactProfitabilitySummaryValue = {};
+
+    static yearRevenueCostRatio = {};
+    
     constructor() {
         this.structure = {
             "revenue": 0,
@@ -71,7 +79,7 @@ class FinanceGenerator {
             FinanceGenerator.yearPlanRevenueSummaryValue[type][year] = {};
             for (let month in FinanceGenerator.yearPlanRevenue[type][year]) {
                 for (let day in FinanceGenerator.yearPlanRevenue[type][year][month]) {
-                    let currentDayValue = Math.round(Math.random() * (500-300) + 300);
+                    let currentDayValue = Math.round(Math.random() * (111500-51300) + 51300);
                     FinanceGenerator.yearPlanRevenue[type][year][month][day] = currentDayValue;
                     if (!FinanceGenerator.yearPlanRevenueSummaryValue[type][year][month]) {
                         FinanceGenerator.yearPlanRevenueSummaryValue[type][year][month] = 0;
@@ -92,7 +100,7 @@ class FinanceGenerator {
             FinanceGenerator.yearFactRevenueSummaryValue[type][year] = {};
             for (let month in FinanceGenerator.yearFactRevenue[type][year]) {
                 for (let day in FinanceGenerator.yearFactRevenue[type][year][month]) {
-                    let currentDayValue = Math.round(Math.random() * (500-300) + 300);
+                    let currentDayValue = Math.round(Math.random() * (111500-5300) + 5300);
                     const currentDate = new Date();
                     const currentYear = currentDate.getFullYear();
                     const currentMonth = currentDate.getMonth() + 1;
@@ -247,32 +255,99 @@ class FinanceGenerator {
 
         this.structure.profit_consolidated.profitability = FinanceGenerator.yearFactProfitabilitySummaryValue[type][year];
         this.structure.profit_consolidated.profitability_month_detalized = FinanceGenerator.yearFactProfitability[type][year];
+        
+        // EXPENSES
+        // PLAN
+        if (!FinanceGenerator.yearPlanExpenses[type]) {
+            FinanceGenerator.yearPlanExpenses[type] = {};
+        }
+        if (!FinanceGenerator.yearPlanExpensesSummaryValue[type]) {
+            FinanceGenerator.yearPlanExpensesSummaryValue[type] = {};
+        }
+        if (!FinanceGenerator.yearPlanExpenses[type][year]) {
+            FinanceGenerator.yearPlanExpenses[type][year] = generateYearMonthByDaysStructure(year, month)
+            FinanceGenerator.yearPlanExpensesSummaryValue[type][year] = {};
+            for (let month in FinanceGenerator.yearPlanExpenses[type][year]) {
+                for (let day in FinanceGenerator.yearPlanExpenses[type][year][month]) {
+                    let currentDayValue = Math.round(Math.random() * (500-300) + 300);
+                    FinanceGenerator.yearPlanExpenses[type][year][month][day] = currentDayValue;
+                    if (!FinanceGenerator.yearPlanExpensesSummaryValue[type][year][month]) {
+                        FinanceGenerator.yearPlanExpensesSummaryValue[type][year][month] = 0;
+                    }
+                    FinanceGenerator.yearPlanExpensesSummaryValue[type][year][month] += currentDayValue;
+                }
+            }
+        }
+        // FACT
+        if (!FinanceGenerator.yearFactExpenses[type]) {
+            FinanceGenerator.yearFactExpenses[type] = {};
+        }
+        if (!FinanceGenerator.yearFactExpensesSummaryValue[type]) {
+            FinanceGenerator.yearFactExpensesSummaryValue[type] = {};
+        }
+        if (!FinanceGenerator.yearFactExpenses[type][year]) {
+            FinanceGenerator.yearFactExpenses[type][year] = generateYearMonthByDaysStructure(year, month)
+            FinanceGenerator.yearFactExpensesSummaryValue[type][year] = {};
+            for (let month in FinanceGenerator.yearFactExpenses[type][year]) {
+                for (let day in FinanceGenerator.yearFactExpenses[type][year][month]) {
+                    let currentDayValue = Math.round(Math.random() * (200-100) + 100);
+                    const currentDate = new Date();
+                    const currentYear = currentDate.getFullYear();
+                    const currentMonth = currentDate.getMonth() + 1;
+                    const currentDay = currentDate.getDate();
+                    if ((year > currentYear) || ((year == currentYear) && (month > currentMonth)) || ((year == currentYear) && (month == currentMonth) && (day > currentDay))) {
+                        currentDayValue = 0;
+                    }
+                    FinanceGenerator.yearFactExpenses[type][year][month][day] = currentDayValue;
+                    if (!FinanceGenerator.yearFactExpensesSummaryValue[type][year][month]) {
+                        FinanceGenerator.yearFactExpensesSummaryValue[type][year][month] = 0;
+                    }
+                    FinanceGenerator.yearFactExpensesSummaryValue[type][year][month] += currentDayValue;
+                }
+            }
+        }
+        this.structure.expenses_consolidated.plan = FinanceGenerator.yearPlanExpenses[type][year];
+        this.structure.expenses_consolidated.fact = FinanceGenerator.yearFactExpenses[type][year];
 
+        this.structure.expenses = FinanceGenerator.yearFactExpensesSummaryValue[type][year][month] / FinanceGenerator.yearFactRevenueSummaryValue[type][year][month] * 100;
+        if (!this.structure.expenses) {
+            this.structure.expenses = 0;
+        }
 
-
-        this.structure.expenses_consolidated.plan = generateYearMonthByDaysStructure(year, month)
-        this.structure.expenses_consolidated.fact = generateYearMonthByDaysStructure(year, month)
-
-        this.generateSankeyData();
+        this.generateSankeyData(null, type, year, month);
         
         return this.structure;
     }
 
     generateSankeyLinks(custom, count) {
         const result = [];
-        for (let i = 1; i <= count; i++) {
-            result.push({
-                "source": mappers.sankeyLeftNames[0],
-                "target": mappers.sankeyRightNames[0],
-                "value": Math.round(Math.random())
-            });
+        for (let i = 0; i <= mappers.sankeyLeftNames.length; i++) {
+            for (let j = 0; j <= mappers.sankeyRightNames.length; j++) {
+                result.push({
+                    "source": mappers.sankeyLeftNames[i],
+                    "target": mappers.sankeyRightNames[j],
+                    "value": 1
+                });
+            }
         }
         return result;
     }
 
     generateSankeyData(custom, type, year, month) {
-        this.structure.revenue_cost_ratio.left_values = [0, 0, 0, 0];
-        this.structure.revenue_cost_ratio.right_values = [0, 0, 0, 0];
+        let revenueYearSum = 0;
+        for (let month in FinanceGenerator.yearFactRevenueSummaryValue[type][year]) {
+            revenueYearSum += FinanceGenerator.yearFactRevenueSummaryValue[type][year][month];
+        }
+        let revenue = revenueYearSum;
+
+        let expensesYearSum = 0;
+        for (let month in FinanceGenerator.yearFactExpensesSummaryValue[type][year]) {
+            expensesYearSum += FinanceGenerator.yearFactExpensesSummaryValue[type][year][month];
+        }
+        let expenses = FinanceGenerator.yearFactExpensesSummaryValue[type][year][month];
+
+        this.structure.revenue_cost_ratio.left_values = [revenue * 0.2, revenue * 0.3, revenue * 0.4, revenue * 0.1];
+        this.structure.revenue_cost_ratio.right_values = [expenses * 0.1, expenses * 0.2, expenses * 0.5, expenses * 0.2];
         this.structure.revenue_cost_ratio.data = [...mappers.sankeyLeftNames, ...mappers.sankeyRightNames];
         this.structure.revenue_cost_ratio.links = this.generateSankeyLinks(null, 16);
     }

@@ -9,6 +9,7 @@ const generateDataFile = () => {
     dataGenerator.generateIndustryTypesSumAllFilterData();
     dataGenerator.generateLetterColors();
     dataGenerator.calculateDiffGlobal();
+    dataGenerator.fixSankey();
     // write data to file
     const data = dataGenerator.resultTemplate;
     fileWriter.writeFile(data, 'test');
