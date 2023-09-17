@@ -72,55 +72,104 @@ class MoraleGenerator {
     }
 
     generateData(custom, type, year, month) {
-        // KPI
-        this.structure.number = Math.floor(Math.random() * (8000 - 600) + 600);
-        this.structure.fluidity = Number((Math.random() * (15 - 2) + 2).toFixed(2));
-        this.structure.additional_shifts_hours = Math.floor(Math.random() * (200 - 100) + 100);
-
-        const generateRandomParts = () => {
-            let max = 100;
-            let diff1 = Math.round(Math.random() * (30 - 10) + 10);
-            max = max - diff1;
-            let diff2 = Math.round(Math.random() * (max - 0) + 0);
-            max = max - diff2;
+        const currentDate = new Date();
+        const currentYear = currentDate.getFullYear();
+        const currentMonth = currentDate.getMonth() + 1;
+        const currentDay = currentDate.getDate();
+        if ((year > currentYear) || ((year == currentYear) && (month > currentMonth))) {
+            console.log(`morale generation ignored on ${year}-${month} date!`)
+        } else {
+            // KPI
+            this.structure.number = Math.floor(Math.random() * (8000 - 600) + 600);
+            this.structure.fluidity = Number((Math.random() * (15 - 2) + 2).toFixed(2));
+            this.structure.additional_shifts_hours = Math.floor(Math.random() * (200 - 100) + 100);
     
-            return [diff1, diff2, max];
+            const generateRandomParts = () => {
+                let max = 100;
+                let diff1 = Math.round(Math.random() * (30 - 10) + 10);
+                max = max - diff1;
+                let diff2 = Math.round(Math.random() * (max - 0) + 0);
+                max = max - diff2;
+        
+                return [diff1, diff2, max];
+            }
+    
+            // EMPLOYMENT SATISFACTION
+            const [satisfactionParts1, satisfactionParts2, satisfactionParts3] = generateRandomParts();
+    
+            this.structure.employee_satisfaction.low = satisfactionParts1;
+            this.structure.employee_satisfaction.middle = satisfactionParts2;
+            this.structure.employee_satisfaction.high = satisfactionParts3;
+    
+            // EQ_T
+            const [part1, part2, part3] = generateRandomParts();
+    
+            this.structure.equipment_lifetime.T.more_than_5 = part1;
+            this.structure.equipment_lifetime.T.from_1_to_5 = part2;
+            this.structure.equipment_lifetime.T.less_than_1 = part3;
+    
+            // EQ_OX
+            const [part11, part22, part33] = generateRandomParts();
+    
+            this.structure.equipment_lifetime.OX.more_than_5 = part11;
+            this.structure.equipment_lifetime.OX.from_1_to_5 = part22;
+            this.structure.equipment_lifetime.OX.less_than_1 = part33;
+    
+            // EQ_PE
+            const [part111, part222, part333] = generateRandomParts();
+    
+            this.structure.equipment_lifetime.PE.more_than_5 = part111;
+            this.structure.equipment_lifetime.PE.from_1_to_5 = part222;
+            this.structure.equipment_lifetime.PE.less_than_1 = part333;
+    
+            // EQ_PK
+            const [part1111, part2222, part3333] = generateRandomParts();
+    
+            this.structure.equipment_lifetime.PK.more_than_5 = part1111;
+            this.structure.equipment_lifetime.PK.from_1_to_5 = part2222;
+            this.structure.equipment_lifetime.PK.less_than_1 = part3333;
+    
+            // INCIDENTS
+            this.structure.incidents = Math.floor(Math.random() * (5 - 1) + 1)
+            this.structure.incident_categories.outage = Math.floor(Math.random() * this.structure.incidents);
+            this.structure.incident_categories.trauma = this.structure.incidents - this.structure.incident_categories.outage;
+    
+            this.structure.incidents_affected = Math.floor(this.structure.incident_categories.outage * 0.5);
+            this.structure.incidents_outage_hours = this.structure.incident_categories.trauma * 2;
+    
+            this.structure.incidents_max = 5;
+    
+            let sum = 0;
+            this.structure.events_detalization.training_events = {}
+            this.structure.events_detalization.training_events['fas']
+            this.structure.events_detalization.training_events['Курсы повышения квалификации'] = Math.floor(Math.random() * 5);
+            this.structure.events_detalization.training_events['Конференции'] = Math.floor(Math.random() * 5);
+            this.structure.events_detalization.training_events['Обмен опытом с другими предприятиями'] = Math.floor(Math.random() * 5);
+            for (let key in this.structure.events_detalization.training_events) {
+                sum += this.structure.events_detalization.training_events[key];
+            }
+            this.structure.events.training_events = sum;
+            sum = 0 
+    
+            this.structure.events_detalization.workplace_improvements['Замена мебели'] = Math.floor(Math.random() * 3);
+            this.structure.events_detalization.workplace_improvements['Клининг'] = Math.floor(Math.random() * 4);
+            this.structure.events_detalization.workplace_improvements['Контроль работы системы вентиляции'] = Math.floor(Math.random() * 3);
+            for (let key in this.structure.events_detalization.workplace_improvements) {
+                sum += this.structure.events_detalization.workplace_improvements[key];
+            }
+            this.structure.events.workplace_improvements = sum;
+            sum = 0 
+    
+            this.structure.events_detalization.wellness_events['Турнир по футболу'] = Math.floor(Math.random() * 3);
+            this.structure.events_detalization.wellness_events['Марафон'] = Math.floor(Math.random() * 3);
+            this.structure.events_detalization.wellness_events['Семейные праздники'] = Math.floor(Math.random() * 4);
+            this.structure.events_detalization.wellness_events['Турнир по шахматам'] = Math.floor(Math.random() * 3);
+            for (let key in this.structure.events_detalization.wellness_events) {
+                sum += this.structure.events_detalization.wellness_events[key];
+            }
+            this.structure.events.wellness_events = sum;
+            sum = 0
         }
-
-        // EMPLOYMENT SATISFACTION
-        const [satisfactionParts1, satisfactionParts2, satisfactionParts3] = generateRandomParts();
-
-        this.structure.employee_satisfaction.low = satisfactionParts1;
-        this.structure.employee_satisfaction.middle = satisfactionParts2;
-        this.structure.employee_satisfaction.high = satisfactionParts3;
-
-        // EQ_T
-        const [part1, part2, part3] = generateRandomParts();
-
-        this.structure.equipment_lifetime.T.more_than_5 = part1;
-        this.structure.equipment_lifetime.T.from_1_to_5 = part2;
-        this.structure.equipment_lifetime.T.less_than_1 = part3;
-
-        // EQ_OX
-        const [part11, part22, part33] = generateRandomParts();
-
-        this.structure.equipment_lifetime.OX.more_than_5 = part11;
-        this.structure.equipment_lifetime.OX.from_1_to_5 = part22;
-        this.structure.equipment_lifetime.OX.less_than_1 = part33;
-
-        // EQ_PE
-        const [part111, part222, part333] = generateRandomParts();
-
-        this.structure.equipment_lifetime.PE.more_than_5 = part111;
-        this.structure.equipment_lifetime.PE.from_1_to_5 = part222;
-        this.structure.equipment_lifetime.PE.less_than_1 = part333;
-
-        // EQ_PK
-        const [part1111, part2222, part3333] = generateRandomParts();
-
-        this.structure.equipment_lifetime.PK.more_than_5 = part1111;
-        this.structure.equipment_lifetime.PK.from_1_to_5 = part2222;
-        this.structure.equipment_lifetime.PK.less_than_1 = part3333;
 
         return this.structure;
     }

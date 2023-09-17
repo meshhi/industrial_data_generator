@@ -27,8 +27,8 @@ class DeliveryGenerator {
                 "plan": 0,
                 "fact": 0
             },
-            "requisitions": 0,
-            "map": 0,
+            "requisitions": [],
+            "map": mappers.mapData,
             "produced_diff": 0,
             "produced_diff_color": 2,
             "shipped_diff": 0,
@@ -147,16 +147,25 @@ class DeliveryGenerator {
         this.structure.shipped_consolidated.fact = DeliveryGenerator.yearFactShipped[type][year]
 
         this.structure.shipped = DeliveryGenerator.yearFactShippedSummaryValue[type][year][month];
-        // REQUISITIONS
-        this.structure.requisitions = this.generateRequisitions(custom, type, 10, year, month, DeliveryGenerator.yearFactShippedSummaryValue[type][year][month]);
-        // MAP
-        this.structure.map = this.generateMap(custom, type, year, month);
 
-        // DEFECTIVE
-        let defectiveVal = DeliveryGenerator.yearFactShippedSummaryValue[type][year][month] * Math.random();
-        this.structure.defective = defectiveVal / DeliveryGenerator.yearFactShippedSummaryValue[type][year][month] * 100;
-        if (!this.structure.defective) {
-            this.structure.defective = 0;
+        const currentDate = new Date();
+        const currentYear = currentDate.getFullYear();
+        const currentMonth = currentDate.getMonth() + 1;
+        const currentDay = currentDate.getDate();
+        if ((year > currentYear) || ((year == currentYear) && (month > currentMonth))) {
+            console.log(`delivery generation ignored on ${year}-${month} date!`)
+        } else {
+            // REQUISITIONS
+            this.structure.requisitions = this.generateRequisitions(custom, type, 10, year, month, DeliveryGenerator.yearFactShippedSummaryValue[type][year][month]);
+            // MAP
+            this.structure.map = this.generateMap(custom, type, year, month);
+    
+            // DEFECTIVE
+            let defectiveVal = DeliveryGenerator.yearFactShippedSummaryValue[type][year][month] * Math.random();
+            this.structure.defective = defectiveVal / DeliveryGenerator.yearFactShippedSummaryValue[type][year][month] * 100;
+            if (!this.structure.defective) {
+                this.structure.defective = 0;
+            }
         }
         return this.structure;
     }
