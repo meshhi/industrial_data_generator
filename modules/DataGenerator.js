@@ -1442,7 +1442,11 @@ export default class DataGenerator {
                             if (!FinanceGenerator.yearFactExpensesSummaryValue['all'][year][type]) {
                                 FinanceGenerator.yearFactExpensesSummaryValue['all'][year][type] = 0
                             }
+                            if (!FinanceGenerator.yearFactExpensesSummaryValue['all'][year][`${type}_${month}`]) {
+                                FinanceGenerator.yearFactExpensesSummaryValue['all'][year][`${type}_${month}`] = 0
+                            }
                             FinanceGenerator.yearFactExpensesSummaryValue['all'][year][type] += FinanceGenerator.yearFactExpensesSummaryValue[type][year][month]
+                            FinanceGenerator.yearFactExpensesSummaryValue['all'][year][`${type}_${month}`] += FinanceGenerator.yearFactExpensesSummaryValue[type][year][month]
                         }
                     }
                 }
@@ -1454,8 +1458,9 @@ export default class DataGenerator {
             for (let year in this.resultTemplate[type]) {
                 for (let month in this.resultTemplate[type][year]) {
                     if (type == 'all') {
-                        if (month == 'all') {
-                            this.resultTemplate[type][year][month]['finance']['revenue_cost_ratio']['right_values'] = [FinanceGenerator.yearFactExpensesSummaryValue[type][year]['pipes'], FinanceGenerator.yearFactExpensesSummaryValue[type][year]['polyethylene'], FinanceGenerator.yearFactExpensesSummaryValue[type][year]['polycarbonate'], FinanceGenerator.yearFactExpensesSummaryValue[type][year]['organic_chemistry']]
+                        if (month !== 'all') {
+                            this.resultTemplate[type][year][month]['finance']['revenue_cost_ratio']['right_values'] = [FinanceGenerator.yearFactExpensesSummaryValue['all'][year][`${'pipes'}_${month}`], FinanceGenerator.yearFactExpensesSummaryValue['all'][year][`${'polyethylene'}_${month}`]
+                            , FinanceGenerator.yearFactExpensesSummaryValue['all'][year][`${'polycarbonate'}_${month}`], FinanceGenerator.yearFactExpensesSummaryValue['all'][year][`${'organic_chemistry'}_${month}`]]
                         }
                     }
                 }
@@ -1477,5 +1482,42 @@ export default class DataGenerator {
         }
 
         // TODO BY MONTHS
+        for (let type in this.resultTemplate) {
+            if (type == 'all') {
+                for (let year in this.resultTemplate[type]) {
+                    for (let month in this.resultTemplate[type][year]) {
+                        if (month !== 'all') {
+                            this.resultTemplate[type][year][month]['finance']['revenue_cost_ratio']['left_values'] = [this.resultTemplate['pipes'][year][month]['finance']['revenue'], this.resultTemplate['polyethylene'][year][month]['finance']['revenue'], this.resultTemplate['polycarbonate'][year][month]['finance']['revenue'], this.resultTemplate['organic_chemistry'][year][month]['finance']['revenue']]
+                        }
+                    }
+                }
+
+            }
+        }
+        for (let type in this.resultTemplate) {
+            if (type !== 'all') {
+                for (let year in this.resultTemplate[type]) {
+                    for (let month in this.resultTemplate[type][year]) {
+                        if (month !== 'all') {
+                            this.resultTemplate[type][year][month]['finance']['revenue_cost_ratio']['left_values'] = this.resultTemplate['all'][year][month]['finance']['revenue_cost_ratio']['left_values']
+                        }
+                    }
+                }
+
+            }
+        }
+
+        for (let type in this.resultTemplate) {
+            if (type !== 'all') {
+                for (let year in this.resultTemplate[type]) {
+                    for (let month in this.resultTemplate[type][year]) {
+                        if (month !== 'all') {
+                            this.resultTemplate[type][year][month]['finance']['revenue_cost_ratio']['right_values'] = this.resultTemplate['all'][year][month]['finance']['revenue_cost_ratio']['right_values']
+                        }
+                    }
+                }
+
+            }
+        }
     }
 }
