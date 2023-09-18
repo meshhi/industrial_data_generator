@@ -80,7 +80,7 @@ class MoraleGenerator {
             console.log(`morale generation ignored on ${year}-${month} date!`)
         } else {
             // KPI
-            this.structure.number = Math.floor(Math.random() * (8000 - 600) + 600);
+            this.structure.number = Math.floor(Math.random() * (1500 - 800) + 800);
             this.structure.fluidity = Number((Math.random() * (15 - 2) + 2).toFixed(2));
             this.structure.additional_shifts_hours = Math.floor(Math.random() * (200 - 100) + 100);
     
@@ -101,11 +101,15 @@ class MoraleGenerator {
                 if (month == 1) {
                     if (type == 'polycarbonate') {
                         [satisfactionParts1, satisfactionParts2, satisfactionParts3] = [30, 57, 13]
+                        this.structure.additional_shifts_hours = Math.floor(Math.random() * (300 - 200) + 200);
+                        this.structure.number = Math.floor(Math.random() * (1200 - 1000) + 1000);
                     }
                 }
                 if (month == 2) {
                     if (type == 'polycarbonate') {
+                        this.structure.additional_shifts_hours = Math.floor(Math.random() * (300 - 100) + 100);
                         [satisfactionParts1, satisfactionParts2, satisfactionParts3] = [45, 50, 5]
+                        this.structure.number = Math.floor(Math.random() * (1000 - 900) + 900);
                     }
                 }
             }
@@ -155,8 +159,25 @@ class MoraleGenerator {
             this.structure.equipment_lifetime.PK.from_1_to_5 = part2222;
             this.structure.equipment_lifetime.PK.less_than_1 = part3333;
     
+            
             // INCIDENTS
             this.structure.incidents = Math.floor(Math.random() * (5 - 1) + 1)
+
+            // CUSTOM VALUE
+            if (year == 2023) {
+                if (month == 1) {
+                    if (type == 'polycarbonate') {
+                        this.structure.incidents = Math.floor(Math.random() * (2 - 1) + 1)
+                    }
+                }
+                if (month == 2) {
+                    if (type == 'polycarbonate') {
+                        this.structure.incidents = Math.floor(Math.random() * (5 - 4) + 4)
+                    }
+                }
+            }
+
+
             this.structure.incident_categories.outage = Math.floor(Math.random() * this.structure.incidents);
             this.structure.incident_categories.trauma = this.structure.incidents - this.structure.incident_categories.outage;
     
@@ -164,6 +185,8 @@ class MoraleGenerator {
             this.structure.incidents_outage_hours = this.structure.incident_categories.trauma * 2;
     
             this.structure.incidents_max = 5;
+
+
     
             let sum = 0;
             this.structure.events_detalization.training_events = {}

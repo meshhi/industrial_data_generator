@@ -117,6 +117,7 @@ export default class DataGenerator {
     
             }
             fluidity = Number((fluidity/12).toFixed(2))
+            number = Number((number/12).toFixed(0))
             for (let month in yearData) {
                 eventsTrainingEventsDetalization = sumDataInObjects(yearData[month]['security_and_morale']['events_detalization']['training_events'], month)
             }

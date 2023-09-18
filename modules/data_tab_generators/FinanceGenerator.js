@@ -79,7 +79,20 @@ class FinanceGenerator {
             FinanceGenerator.yearPlanRevenueSummaryValue[type][year] = {};
             for (let month in FinanceGenerator.yearPlanRevenue[type][year]) {
                 for (let day in FinanceGenerator.yearPlanRevenue[type][year][month]) {
-                    let currentDayValue = Math.round(Math.random() * (111500-51300) + 51300);
+                    let currentDayValue = Math.round(Math.random() * (191500-115500) + 115500);
+
+                    // CUSTOM VALUE
+// if (year == 2023) {
+//     if ((month == 1) || (month == 2) || (month == 3)) {
+//         // if (type == 'polycarbonate') {
+//             currentDayValue = Math.round(Math.random() * (30500-5300) + 5300);
+//         // } else {
+//             // currentDayValue = Math.round(Math.random() * (60500-15300) + 15300);
+//         // }
+//     }
+// } 
+
+
                     FinanceGenerator.yearPlanRevenue[type][year][month][day] = currentDayValue;
                     if (!FinanceGenerator.yearPlanRevenueSummaryValue[type][year][month]) {
                         FinanceGenerator.yearPlanRevenueSummaryValue[type][year][month] = 0;
@@ -105,19 +118,24 @@ class FinanceGenerator {
                     const currentYear = currentDate.getFullYear();
                     const currentMonth = currentDate.getMonth() + 1;
                     const currentDay = currentDate.getDate();
+                    // CUSTOM VALUE
+                    if (year == 2023) {
+                        if ((month == 1) || (month == 2) || (month == 3)) {
+                            if (type == 'polycarbonate') {
+                                currentDayValue = Math.round(Math.random() * (110300-70300) + 70300);
+                            } else {
+                                currentDayValue = Math.round(Math.random() * (151500-110300) + 110300);
+                            }
+                        } else {
+                            if (type == 'polycarbonate') {
+                                currentDayValue = Math.round(Math.random() * (130300-110300) + 110300);
+                            }
+                        }
+                    }                    
+
                     if ((year > currentYear) || ((year == currentYear) && (month > currentMonth)) || ((year == currentYear) && (month == currentMonth) && (day > currentDay))) {
                         currentDayValue = 0;
                     }
-// CUSTOM VALUE
-if (year == 2023) {
-    if ((month == 1) || (month == 2) || (month == 3)) {
-        if (type == 'polycarbonate') {
-            currentDayValue = Math.round(Math.random() * (50500-15300) + 15300);
-        }
-    }
-}                    
-
-
 
                     FinanceGenerator.yearFactRevenue[type][year][month][day] = currentDayValue;
                     if (!FinanceGenerator.yearFactRevenueSummaryValue[type][year][month]) {
@@ -248,7 +266,9 @@ if (year == 2023) {
                     if (year == 2023) {
                         if ((month == 1) || (month == 2) || (month == 3)) {
                             if (type == 'polycarbonate') {
-                                currentDayValue = Math.round(Math.random() * ((revenueVal*0.2)-(revenueVal*0.05)) + (revenueVal*0.05));
+                                currentDayValue = Math.round(Math.random() * ((revenueVal*0.3)-(revenueVal*0.15)) + (revenueVal*0.15));
+                            } else {
+                                currentDayValue = Math.round(Math.random() * ((revenueVal*0.4)-(revenueVal*0.2)) + (revenueVal*0.2));
                             }
                         }
                     }
@@ -291,7 +311,7 @@ if (year == 2023) {
             FinanceGenerator.yearPlanExpensesSummaryValue[type][year] = {};
             for (let month in FinanceGenerator.yearPlanExpenses[type][year]) {
                 for (let day in FinanceGenerator.yearPlanExpenses[type][year][month]) {
-                    let currentDayValue = Math.round(Math.random() * (100000-10000) + 10000);
+                    let currentDayValue = Math.round(Math.random() * (30000-10000) + 10000);
                     FinanceGenerator.yearPlanExpenses[type][year][month][day] = currentDayValue;
                     if (!FinanceGenerator.yearPlanExpensesSummaryValue[type][year][month]) {
                         FinanceGenerator.yearPlanExpensesSummaryValue[type][year][month] = 0;
@@ -312,17 +332,18 @@ if (year == 2023) {
             FinanceGenerator.yearFactExpensesSummaryValue[type][year] = {};
             for (let month in FinanceGenerator.yearFactExpenses[type][year]) {
                 for (let day in FinanceGenerator.yearFactExpenses[type][year][month]) {
-                    let currentDayValue = Math.round(Math.random() * (50000-10000) + 10000);
+                    let currentDayValue = Math.round(Math.random() * (30000-10000) + 10000);
 
                     // CUSTOM VALUE
                     if (year == 2023) {
                         if ((month == 1) || (month == 2) || (month == 3)) {
                             if (type == 'polycarbonate') {
-                                currentDayValue = Math.round(Math.random() * (200000-50000) + 50000);
+                                currentDayValue = Math.round(Math.random() * (40000-20000) + 20000);
+                            } else {
+                                // currentDayValue = Math.round(Math.random() * (55000-15000) + 15000);
                             }
                         }
                     }
-
 
                     const currentDate = new Date();
                     const currentYear = currentDate.getFullYear();
